@@ -1,12 +1,10 @@
-# @styled/effector
-
-Proof of concept
+# leafs
 
 ## Usage
 
 ```ts
-import { using, h } from 'effector-dom';
-import { styled } from '@styled/effector';
+import { using } from 'forest';
+import { styled, StyledRoot } from 'leafs';
 
 const Block = styled.div`
   display: flex;
@@ -56,4 +54,5 @@ function App() {
 }
 
 using(document.querySelector('#root'), App);
+using(document.querySelector('head'), StyledRoot));
 ```

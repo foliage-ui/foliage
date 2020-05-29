@@ -1,9 +1,26 @@
-import { createEvent, createStore } from 'effector';
-import { using, h, spec, node } from 'effector-dom';
+import { createEvent, createStore, Store, Event } from 'effector';
+import {
+  AttributeStore,
+  DOMProperty,
+  DOMTag,
+  PropertyMap,
+  StylePropertyMap,
+  TransformMap,
+  h,
+  node,
+  spec,
+} from 'forest';
 import { serialize, compile, stringify } from 'stylis';
+
+import { domElements } from './elements';
 
 const addStyle = createEvent<{ id: string; styles: string }>();
 const $styles = createStore<{ map: Map<string, string> }>({ map: new Map() });
+
+export function StyledRoot() {
+  const text = $styles.map(({ map }) => [...map.values()].join(' '));
+  h('style', { text });
+}
 
 $styles.on(addStyle, (state, { id, styles }) => {
   if (state.map.has(id)) return state;
@@ -22,9 +39,12 @@ const idCount = () => {
 
 const styledId = idCount();
 
-type ComponentType = Function & { STYLED_ID: string };
+type Component = ((config: Spec & Fn) => void) & { STYLED_ID: string };
 
-function join(strings: string[], interps: (string | ComponentType | number)[]) {
+function join(
+  strings: TemplateStringsArray,
+  interps: (string | Component | number)[],
+) {
   const result = [strings[0]];
   interps.forEach((part, index) => {
     if (typeof part === 'function') {
@@ -42,171 +62,59 @@ function join(strings: string[], interps: (string | ComponentType | number)[]) {
   return result.join('');
 }
 
-const domElements = [
-  'a',
-  'abbr',
-  'address',
-  'area',
-  'article',
-  'aside',
-  'audio',
-  'b',
-  'base',
-  'bdi',
-  'bdo',
-  'big',
-  'blockquote',
-  'body',
-  'br',
-  'button',
-  'canvas',
-  'caption',
-  'cite',
-  'code',
-  'col',
-  'colgroup',
-  'data',
-  'datalist',
-  'dd',
-  'del',
-  'details',
-  'dfn',
-  'dialog',
-  'div',
-  'dl',
-  'dt',
-  'em',
-  'embed',
-  'fieldset',
-  'figcaption',
-  'figure',
-  'footer',
-  'form',
-  'h1',
-  'h2',
-  'h3',
-  'h4',
-  'h5',
-  'h6',
-  'head',
-  'header',
-  'hgroup',
-  'hr',
-  'html',
-  'i',
-  'iframe',
-  'img',
-  'input',
-  'ins',
-  'kbd',
-  'keygen',
-  'label',
-  'legend',
-  'li',
-  'link',
-  'main',
-  'map',
-  'mark',
-  'marquee',
-  'menu',
-  'menuitem',
-  'meta',
-  'meter',
-  'nav',
-  'noscript',
-  'object',
-  'ol',
-  'optgroup',
-  'option',
-  'output',
-  'p',
-  'param',
-  'picture',
-  'pre',
-  'progress',
-  'q',
-  'rp',
-  'rt',
-  'ruby',
-  's',
-  'samp',
-  'script',
-  'section',
-  'select',
-  'small',
-  'source',
-  'span',
-  'strong',
-  'style',
-  'sub',
-  'summary',
-  'sup',
-  'table',
-  'tbody',
-  'td',
-  'textarea',
-  'tfoot',
-  'th',
-  'thead',
-  'time',
-  'title',
-  'tr',
-  'track',
-  'u',
-  'ul',
-  'var',
-  'video',
-  'wbr',
+interface Spec {
+  attr?: PropertyMap;
+  data?: PropertyMap;
+  transform?: Partial<TransformMap>;
+  text?: DOMProperty | AttributeStore | Array<DOMProperty | AttributeStore>;
+  visible?: Store<boolean>;
+  style?: StylePropertyMap;
+  styleVar?: PropertyMap;
+  focus?: {
+    focus?: Event<unknown>;
+    blur?: Event<unknown>;
+  };
+  handler?: Partial<
+    { [K in keyof HTMLElementEventMap]: Event<HTMLElementEventMap[K]> }
+  >;
+}
 
-  // SVG
-  'circle',
-  'clipPath',
-  'defs',
-  'ellipse',
-  'foreignObject',
-  'g',
-  'image',
-  'line',
-  'linearGradient',
-  'marker',
-  'mask',
-  'path',
-  'pattern',
-  'polygon',
-  'polyline',
-  'radialGradient',
-  'rect',
-  'stop',
-  'svg',
-  'text',
-  'tspan',
-] as const;
+interface Fn {
+  fn?: () => void;
+}
 
-type DomTag = typeof domElements[number];
+type Creator = (
+  content: TemplateStringsArray,
+  ...interpolations: (string | Component | number)[]
+) => Component;
 
-const styled = (tag: DomTag) => (
-  content: string[],
-  ...interpolations: (string | ComponentType | number)[]
+type TagFabric = (tag: DOMTag) => Creator;
+
+type TagMap = {
+  [P in DOMTag]: Creator;
+};
+
+const fabric: TagFabric & Partial<TagMap> = (tag: DOMTag) => (
+  content,
+  ...interpolations
 ) => {
   const id = styledId();
 
   const styles = join(content, interpolations);
 
-  const Component = (config: any) => {
+  const Component = (config: Spec & Fn) => {
     addStyle({ id, styles });
 
-    (h as any)(tag, {
-      fn() {
-        node((reference) => {
-          reference.classList.add(`es-${id}`);
-        });
-        if (config) {
-          spec(config);
-          if (typeof config.fn === 'function') {
-            config.fn();
-          }
+    h(tag, () => {
+      node((reference) => {
+        reference.classList.add(`es-${id}`);
+      });
+      if (config) {
+        spec(config);
+        if (typeof config.fn === 'function') {
+          config.fn();
         }
-      },
+      }
     });
   };
 
@@ -216,11 +124,7 @@ const styled = (tag: DomTag) => (
 };
 
 domElements.forEach((element) => {
-  styled[element] = styled(element);
+  fabric[element] = fabric(element);
 });
 
-type Styled = {
-  [P in DomTag]: number;
-};
-
-export { styled };
+export const styled = fabric as TagFabric & TagMap;
