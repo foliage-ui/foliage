@@ -3,16 +3,20 @@
   "version": "0.1.0",
   "description": "Styled Components for forest",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "commit": "git-cz",
     "lint": "eslint ./",
+    "build": "tsc --build tsconfig.json",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
-    "start": "parcel example/index.html --no-cache"
+    "start": "parcel example/index.html --no-cache",
+    "prepublishOnly": "rm -rf dist && yarn build"
   },
   "publishConfig": {
     "access": "public"
   },
+  "files": ["dist"],
   "keywords": ["styled", "effector", "components", "dom"],
   "author": "Sergey Sova <mail@sergeysova.com> (https://sergeysova.com/)",
   "license": "MIT",
