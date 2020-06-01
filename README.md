@@ -1,5 +1,8 @@
 # foliage
 
+[NPM](https://npmjs.org/package/foliage)
+[GitHub](https://github.com/sergeysova/foliage)
+
 ## Usage
 
 [Edit on Stackblitz](https://stackblitz.com/edit/foliage-forest)
