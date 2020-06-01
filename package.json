@@ -4,6 +4,7 @@
   "description": "Styled Components for forest",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "homepage": "https://foliage.dev",
   "sideEffects": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
