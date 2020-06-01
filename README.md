@@ -1,4 +1,4 @@
-# foliage
+# foliage 🍃
 
 [NPM](https://npmjs.org/package/foliage)
 [GitHub](https://github.com/sergeysova/foliage)
