@@ -2,6 +2,8 @@
 
 ## Usage
 
+[Edit on Stackblitz](https://stackblitz.com/edit/foliage-forest)
+
 ```ts
 import { using } from 'forest';
 import { styled, StyledRoot } from 'foliage';
@@ -54,5 +56,5 @@ function App() {
 }
 
 using(document.querySelector('#root'), App);
-using(document.querySelector('head'), StyledRoot));
+using(document.querySelector('head'), StyledRoot);
 ```
