@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "commit": "git-cz",
     "lint": "eslint ./",
-    "build": "webpack",
+    "build": "tsc --build ./tsconfig.build.json && webpack",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "start": "parcel example/index.html --no-cache",
     "prepublishOnly": "rm -rf dist && yarn build"

@@ -27,9 +27,7 @@
         "name": "typescript-styled-plugin",
         "tags": ["styled", "css", "createGlobalStyle"]
       }
-    ],
-    "outDir": "./dist",
-    "declaration": true
+    ]
   },
   "include": ["./src/", "./types"]
 }
