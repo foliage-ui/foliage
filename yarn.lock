@@ -4119,10 +4119,10 @@ foreach@^2.0.5:
   resolved "https://registry.yarnpkg.com/foreach/-/foreach-2.0.5.tgz#0bee005018aeb260d0a3af3ae658dd0136ec1b99"
   integrity sha1-C+4AUBiusmDQo6865ljdATbsG5k=
 
-forest@^0.16.0:
-  version "0.16.0"
-  resolved "https://registry.yarnpkg.com/forest/-/forest-0.16.0.tgz#5c2c633ae5443891c3c651a8e5a3c775dd7a95fd"
-  integrity sha512-+egr4LKNOvdMFCvkbFwYu6t8oaErgf6pMe8enXnAdfFqdGqol66UKD5Vp6Z2U3L31wCkls6EXiyiGuiRe42vyw==
+forest@^0.16.1:
+  version "0.16.1"
+  resolved "https://registry.yarnpkg.com/forest/-/forest-0.16.1.tgz#84b8ce8b23b618eb2347d46ca755b2be6ffaafe6"
+  integrity sha512-4H2wCzZ/qDfc1Q33xISKGCmFYupaY2PCMWwoGVt9+/oN9BZrVV7HRZ6VJz/cPucuWJFPU1DbO/1Qe1yCt8WApw==
 
 forever-agent@~0.6.1:
   version "0.6.1"
@@ -5700,11 +5700,6 @@ kleur@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/kleur/-/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==
-
-leafs@^0.0.0-reserved:
-  version "0.0.0-reserved"
-  resolved "https://registry.yarnpkg.com/leafs/-/leafs-0.0.0-reserved.tgz#9b1a108c36db79596c90dacae0dbbe7e4a73bbc6"
-  integrity sha512-MN0NoR6p8frHHGw1usybwEbj8mCVTxcSsowM7tsUpOLtEgH708yrbn4F3l97QVmcddxl0YBD5Q5KeWEyq2D/jg==
 
 leven@^3.1.0:
   version "3.1.0"

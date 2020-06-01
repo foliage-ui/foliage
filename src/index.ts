@@ -39,7 +39,11 @@ const idCount = () => {
 
 const styledId = idCount();
 
-export type Component = ((config: Spec & Fn) => void) & { STYLED_ID: string };
+type Cb = () => void;
+
+export type Component = ((config: Spec | Cb) => void) & {
+  STYLED_ID: string;
+};
 
 function join(
   strings: TemplateStringsArray,
@@ -77,10 +81,7 @@ export interface Spec {
   handler?: Partial<
     { [K in keyof HTMLElementEventMap]: Event<HTMLElementEventMap[K]> }
   >;
-}
-
-export interface Fn {
-  fn?: () => void;
+  fn?: Cb;
 }
 
 type Creator = (
@@ -102,7 +103,7 @@ const fabric: TagFabric & Partial<TagMap> = (tag: DOMTag) => (
 
   const styles = join(content, interpolations);
 
-  const Component = (config: Spec & Fn) => {
+  const Component = (config: Spec | Cb) => {
     addStyle({ id, styles });
 
     h(tag, () => {
@@ -110,9 +111,13 @@ const fabric: TagFabric & Partial<TagMap> = (tag: DOMTag) => (
         reference.classList.add(`es-${id}`);
       });
       if (config) {
-        spec(config);
-        if (typeof config.fn === 'function') {
-          config.fn();
+        if (typeof config === 'function') {
+          config();
+        } else {
+          spec(config);
+          if (typeof config.fn === 'function') {
+            config.fn();
+          }
         }
       }
     });
