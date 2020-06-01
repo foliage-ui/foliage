@@ -4,6 +4,7 @@
   "description": "Styled Components for forest",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "sideEffects": false,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "commit": "git-cz",
@@ -59,7 +60,6 @@
     "version": "0.1.0"
   },
   "dependencies": {
-    "leafs": "^0.0.0-reserved",
     "stylis": "^4.0.0"
   },
   "peerDependencies": {

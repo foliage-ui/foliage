@@ -39,7 +39,7 @@ const idCount = () => {
 
 const styledId = idCount();
 
-type Component = ((config: Spec & Fn) => void) & { STYLED_ID: string };
+export type Component = ((config: Spec & Fn) => void) & { STYLED_ID: string };
 
 function join(
   strings: TemplateStringsArray,
@@ -62,7 +62,7 @@ function join(
   return result.join('');
 }
 
-interface Spec {
+export interface Spec {
   attr?: PropertyMap;
   data?: PropertyMap;
   transform?: Partial<TransformMap>;
@@ -79,7 +79,7 @@ interface Spec {
   >;
 }
 
-interface Fn {
+export interface Fn {
   fn?: () => void;
 }
 
