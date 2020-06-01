@@ -1,10 +1,10 @@
-# leafs
+# foliage
 
 ## Usage
 
 ```ts
 import { using } from 'forest';
-import { styled, StyledRoot } from 'leafs';
+import { styled, StyledRoot } from 'foliage';
 
 const Block = styled.div`
   display: flex;
