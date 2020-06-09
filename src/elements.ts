@@ -1,4 +1,11 @@
-export const domElements = [
+import htmlTags from 'html-tags';
+import svgTags from 'svg-tag-names';
+
+export type DOMTag = keyof HTMLElementTagNameMap | keyof SVGElementTagNameMap;
+
+export const domElements = [...htmlTags, ...svgTags] as DOMTag[];
+
+export const domElements1 = [
   'a',
   'abbr',
   'address',
