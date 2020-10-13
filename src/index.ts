@@ -1,11 +1,11 @@
-import { createEvent, createStore, Store, Event } from 'effector';
+import { createEvent, createStore, Store } from 'effector';
 import {
   AttributeStore,
   DOMProperty,
   DOMTag,
   PropertyMap,
+  HandlerMap,
   StylePropertyMap,
-  TransformMap,
   h,
   node,
   spec,
@@ -17,7 +17,7 @@ import { domElements } from './elements';
 const addStyle = createEvent<{ id: string; styles: string }>();
 const $styles = createStore<{ map: Map<string, string> }>({ map: new Map() });
 
-export function StyledRoot() {
+export function StyledRoot(): void {
   const text = $styles.map(({ map }) => [...map.values()].join(' '));
   h('style', { text });
 }
@@ -69,18 +69,11 @@ function join(
 export interface Spec {
   attr?: PropertyMap;
   data?: PropertyMap;
-  transform?: Partial<TransformMap>;
   text?: DOMProperty | AttributeStore | Array<DOMProperty | AttributeStore>;
   visible?: Store<boolean>;
   style?: StylePropertyMap;
   styleVar?: PropertyMap;
-  focus?: {
-    focus?: Event<unknown>;
-    blur?: Event<unknown>;
-  };
-  handler?: Partial<
-    { [K in keyof HTMLElementEventMap]: Event<HTMLElementEventMap[K]> }
-  >;
+  handler?: HandlerMap;
   fn?: Cb;
 }
 

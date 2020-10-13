@@ -40,15 +40,7 @@
     "no-use-before-define": "off",
     "unicorn/no-null": "off",
     "no-magic-numbers": "off",
-    "unicorn/number-literal-case": "off",
-    "react/prop-types": "off",
-    "react/jsx-filename-extension": [
-      1,
-      {
-        "extensions": [".ts", ".tsx"]
-      }
-    ],
-    "react/jsx-wrap-multilines": "off"
+    "unicorn/number-literal-case": "off"
   },
   "env": {
     "browser": true
