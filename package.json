@@ -1,6 +1,6 @@
 {
   "name": "foliage",
-  "version": "0.104.0",
+  "version": "0.105.0",
   "description": "Styled Components for forest",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
