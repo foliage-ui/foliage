@@ -21,7 +21,9 @@
   "repository": {
     "url": "https://github.com/sergeysova/foliage"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "components",
     "dom",
@@ -53,7 +55,7 @@
     "@typescript-eslint/parser": "^4.4.1",
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",
-    "effector": "^21.7.5",
+    "effector": "^21.8.3",
     "eslint": "^7.11.0",
     "forest": "^0.19.6",
     "husky": "^4.2.5",
@@ -64,7 +66,7 @@
     "sharec-sova-config": "^0.1.0",
     "terser-webpack-plugin": "^3.0.2",
     "ts-loader": "^7.0.5",
-    "typescript": "^4.1.3",
+    "typescript": "^4.1.5",
     "typescript-styled-plugin": "^0.15.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
@@ -77,7 +79,7 @@
     "stylis": "^4.0.0"
   },
   "peerDependencies": {
-    "effector": "^21.7.5",
+    "effector": "^21.8.3",
     "forest": "^0.19.6"
   }
 }

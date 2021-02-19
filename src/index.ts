@@ -1,15 +1,5 @@
 import { createEvent, createStore, Store } from 'effector';
-import {
-  AttributeStore,
-  DOMProperty,
-  DOMTag,
-  PropertyMap,
-  HandlerMap,
-  StylePropertyMap,
-  h,
-  node,
-  spec,
-} from 'forest';
+import { DOMTag, h, node, spec } from 'forest';
 import { serialize, compile, stringify } from 'stylis';
 
 import { domElements } from './elements';
@@ -66,16 +56,7 @@ function join(
   return result.join('');
 }
 
-export interface Spec {
-  attr?: PropertyMap;
-  data?: PropertyMap;
-  text?: DOMProperty | AttributeStore | Array<DOMProperty | AttributeStore>;
-  visible?: Store<boolean>;
-  style?: StylePropertyMap;
-  styleVar?: PropertyMap;
-  handler?: HandlerMap;
-  fn?: Cb;
-}
+export type Spec = Parameters<typeof spec>[0] & { fn?: Cb };
 
 type Creator = (
   content: TemplateStringsArray,
