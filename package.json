@@ -21,7 +21,9 @@
   "repository": {
     "url": "https://github.com/sergeysova/foliage"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "components",
     "dom",
@@ -39,9 +41,11 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.10.2",
+    "@babel/cli": "^7.12.17",
+    "@babel/core": "^7.12.17",
     "@babel/preset-env": "^7.10.2",
     "@babel/preset-typescript": "^7.10.1",
+    "@babel/types": "^7.12.17",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
     "@eslint-kit/eslint-config-base": "^2.1.2",
@@ -51,7 +55,10 @@
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.5",
     "@typescript-eslint/parser": "^4.4.1",
+    "autoprefixer": "^10.2.4",
+    "change-case": "^4.1.2",
     "commitizen": "^4.1.2",
+    "csso": "^4.2.0",
     "cz-conventional-changelog": "^3.2.0",
     "effector": "^21.8.3",
     "eslint": "^7.11.0",
@@ -60,6 +67,9 @@
     "jest": "^26.0.1",
     "lint-staged": "^10.2.2",
     "parcel-bundler": "^1.12.4",
+    "postcss": "^8.2.6",
+    "postcss-csso": "^5.0.0",
+    "postcss-nested": "^5.0.3",
     "prettier": "^2.0.5",
     "sharec-sova-config": "^0.1.0",
     "terser-webpack-plugin": "^3.0.2",
@@ -79,5 +89,11 @@
   "peerDependencies": {
     "effector": "^21.8.3",
     "forest": "^0.19.6"
+  },
+  "browserslist": {
+    "development": [
+      "last 1 ie version",
+      "last 5 chrome version"
+    ]
   }
 }
