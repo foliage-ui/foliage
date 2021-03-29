@@ -20,17 +20,6 @@
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-use-before-define": "off"
       }
-    },
-    {
-      "files": ["**/*.ts", "**/*.tsx"],
-      "extends": [
-        "plugin:@typescript-eslint/eslint-plugin/recommended",
-        "plugin:@typescript-eslint/eslint-plugin/eslint-recommended"
-      ],
-      "rules": {
-        "no-unused-vars": "off",
-        "@typescript-eslint/explicit-function-return-type": "off"
-      }
     }
   ],
   "rules": {
