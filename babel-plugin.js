@@ -1,80 +1,131 @@
-const postcss = require('postcss');
-const autoprefixer = require('autoprefixer');
-const nested = require('postcss-nested');
-const cssoPlugin = require('postcss-csso');
-const csso = require('csso');
-const { camelCase } = require('change-case');
-const t = require('@babel/types');
+module.exports = function (babel, options = {}) {
+  const { types: t } = babel;
+  const {
+    debug = false,
+    allowedModules = ['foliage', 'foliage-react'],
+    allowedMethods = ['css', 'keyframes', 'createGlobalStyle'],
+  } = options;
 
-const instance = postcss([
-  autoprefixer({ overrideBrowserslist: ['last 10 chrome version'] }),
-  nested(),
-]);
+  const nameCreate = debug ? createDebugName : (sid) => sid;
 
-const sample = `
-    --woly-vertical: calc(
-    1px * var(--woly-component-level) * var(--woly-main-level)
-  );
-  --woly-horizontal: calc(
-    var(--woly-const-m) + (1px * var(--woly-main-level)) + var(--woly-vertical)
-  );
-  --woly-gap: calc(
-    (1px * var(--woly-main-level)) +
-      (1px * var(--woly-main-level) * var(--woly-component-level))
-  );
-  display: flex;
-  flex-wrap: nowrap;
-  padding: var(--woly-vertical, 16px) var(--woly-horizontal, 6.4px);
-  color: var(--woly-color, #ffffff);
-  font-size: var(--woly-font-size, 15px);
-  line-height: var(--woly-line-height, 24px);
-  background-color: var(--woly-background, #000000);
-  border-color: var(--woly-border, #000000);
-  border-style: solid;
-  border-width: var(--woly-border-width, 0);
-  border-radius: var(--woly-rounding, 4px);
-  &:hover {
-    color: var(--woly-color-hover, #ffffff);
-    background-color: var(--woly-background-hover, #000000);
-    border-color: var(--woly-border-hover, #000000);
-    outline: none;
-  }
-  &:focus,
-  &:active {
-    color: var(--woly-color-focus, #ffffff);
-    background-color: var(--woly-background-focus, #000000);
-    border-color: var(--woly-border-focus, #000000);
-    outline: none;
-  }
-  &:disabled {
-    color: var(--woly-color-disabled, #ffffff);
-    background-color: var(--woly-background-disabled, #000000);
-    border-color: var(--woly-border-disabled, #000000);
-    outline: none;
-  }
-  & [data-icon] {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--woly-line-height, 24px);
-    height: var(--woly-line-height, 24px);
-  }
-  & > *:not(:first-child) {
-    margin-left: var(--woly-gap);
-  }
-`;
+  return {
+    name: 'ast-transform', // not required
+    visitor: {
+      //VariableDeclarator(path, state) {
+      //  path.node.id.name = addImport(path, 'mor', 'mod');
+      //  path.scope.rename('mor');
+      //},
 
-async function create(css, { filename = 'example.css' } = {}) {
-  const hash = hashCode(css);
-  const className = `.d${hash}`;
-  const source = `${className} { ${css} }`;
+      TaggedTemplateExpression(path, state) {
+        if (
+          t.isMemberExpression(path.node.tag) &&
+          t.isIdentifier(path.node.tag.object) &&
+          t.isIdentifier(path.node.tag.property)
+        ) {
+          // Check that tag.object is a `* as import from 'foliage'`
+          // And property is supported method for compilation
+        }
+        // Find original import for current template tag
+        const tagName = path.node.tag.name;
+        const binding = path.scope.getOwnBinding(tagName);
+        if (binding) {
+          const resolved = resolveOriginalImport(t, binding);
+          if (resolved) {
+            const { module, name } = resolved;
+            // Check that template tag imported from supported module
+            // And method from module should be compiled
+            if (
+              allowedModules.includes(module.node.source.value) &&
+              allowedMethods.includes(name)
+            ) {
+              // Create stable unique id with readable name
+              const derivedName = determineName(t, path);
+              const sid = generateStableID(
+                '',
+                '',
+                derivedName,
+                path.node.loc.start.line,
+                path.node.loc.start.column,
+              );
+              const fullName = nameCreate(sid, derivedName);
 
-  const { css: processed } = await instance.process(source, { from: filename });
-  const { css: minified } = csso.minify(processed);
-  return { minified, variables };
+              //path.scope.rename(name);
+              // console.log(path, fullName, module);
+              path.replaceWith(
+                t.objectExpression([
+                  t.objectProperty(
+                    t.identifier('content'),
+                    t.stringLiteral('COMPILED CSS HERE'),
+                  ),
+                  t.objectProperty(
+                    t.identifier(name),
+                    t.stringLiteral(fullName),
+                  ),
+                ]),
+              );
+              // console.log(Object.keys(path.__proto__).sort())
+            }
+          }
+        }
+      },
+    },
+  };
+};
+
+/**
+ * Find import declaration for binding and resolve original name
+ * For example we have next two lines:
+ * import { foo as bar } from 'module';
+ * const demo = bar``
+ *
+ * This function allows to resolve `foo` from `bar` usage
+ * with import declaration
+ */
+function resolveOriginalImport(t, binding) {
+  const local = binding.identifier;
+  const module = binding.path.find((path) => path.isImportDeclaration());
+
+  if (!module) return null;
+
+  const specifier = module.node.specifiers
+    .filter((node) => t.isImportSpecifier(node))
+    .find((node) => node.local.name === local.name);
+
+  if (!specifier) return null;
+
+  return { name: specifier.imported.name, module };
 }
 
-// create(sample).then(console.log, console.error);
+function createDebugName(sid, determined) {
+  if (determined) {
+    return `${sid}-${determined}`;
+  }
+  return sid;
+}
+
+function determineName(t, path) {
+  if (t.isIdentifier(path)) {
+    return path.name;
+  }
+  if (t.isLiteral(path)) {
+    return String(path.value);
+  }
+  if (t.isVariableDeclarator(path.parent)) {
+    if (t.isIdentifier(path.parent.id)) {
+      return path.parent.id.name;
+    }
+  }
+  if (t.isObjectExpression(path.parent)) {
+    return determineName(t, path.parentPath);
+  }
+  if (t.isObjectProperty(path.parent)) {
+    const local = determineName(t, path.parent.key);
+    const determined = determineName(t, path.parentPath);
+    if (local && determined) {
+      return `${determined}-${local}`;
+    }
+  }
+}
 
 function generateStableID(babelRoot, fileName, varName, line, column) {
   const normalizedPath = stripRoot(babelRoot, fileName, false);
@@ -100,71 +151,3 @@ function hashCode(s) {
     while (i < s.length) h = ((h << 5) - h + s.charCodeAt(i++)) | 0;
   return h.toString(36);
 }
-
-module.exports = function (babel, options = {}) {
-  const foliagePackages = new Set(['foliage']);
-  const styledNames = new Set(['styled']);
-
-  const styledCreators = new Set();
-
-  const importVisitor = {
-    ImportDeclaration(path, state) {
-      const source = path.node.source.value;
-      const specifiers = path.node.specifiers;
-
-      if (foliagePackages.has(source)) {
-        for (let i = 0; i < specifiers.length; i++) {
-          const specifier = specifiers[i];
-          if (!specifier.imported) continue;
-
-          const importedName = specifier.imported.name;
-          const localName = specifier.local.name;
-          if (importedName === localName) continue;
-
-          if (styledNames.has(importedName)) {
-            styledCreators.add(localName);
-          }
-        }
-      }
-    },
-  };
-
-  const plugin = {
-    name: 'foliage/babel-plugin',
-    visitor: {
-      Program: {
-        enter(path, state) {
-          path.traverse(importVisitor, state);
-        },
-      },
-      TaggedTemplateExpression(path) {
-        let name = '';
-        if (t.isVariableDeclarator(path.parent)) {
-          if (t.isIdentifier(path.parent.id)) {
-            name = path.parent.id.name;
-          }
-        }
-        if (
-          t.isMemberExpression(path.node.tag) &&
-          path.node.tag.object.name === 'styled'
-        ) {
-          const id = generateStableID(
-            'world',
-            'hello',
-            name,
-            path.node.loc.start.line,
-            path.node.loc.start.column,
-          );
-          const source = path.node.quasi.quasis[0].value.raw;
-          path.replaceWith(
-            t.callExpression(t.identifier('createComponent'), [
-              t.stringLiteral(source),
-              t.stringLiteral(id),
-            ]),
-          );
-          // https://astexplorer.net/#/gist/534b12b366f203eb06bc7b23b14e9b5c/207fcdbf1fe32a756920e3e65645cbf66597ec82
-        }
-      },
-    },
-  };
-};

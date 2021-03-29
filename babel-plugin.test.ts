@@ -1,5 +1,5 @@
 import pluginTester from 'babel-plugin-tester';
-import plugin from './ast-explorer';
+import plugin from './babel-plugin';
 
 const keyframesAndGlobalStylesShouldCompile = `
 import { css, keyframes, createGlobalStyle } from 'foliage';
