@@ -1,25 +1,12 @@
-export default function (babel) {
+module.exports = function (babel, options = {}) {
   const { types: t } = babel;
+  const {
+    debug = false,
+    allowedModules = ['foliage', 'foliage-react'],
+    allowedMethods = ['css', 'keyframes', 'createGlobalStyle'],
+  } = options;
 
-  const allowedModules = ['foliage', 'foliage-react'];
-
-  function addImport(path, specifier, importPath) {
-    const programPath = path.find((path) => path.isProgram());
-    const renamed = '1' || programPath.scope.generateUidIdentifier(specifier);
-    const [newPath] = programPath.unshiftContainer(
-      'body',
-      t.importDeclaration(
-        [t.importSpecifier(t.identifier(specifier), t.identifier(specifier))],
-        t.stringLiteral(importPath),
-      ),
-    );
-
-    newPath.get('specifiers').forEach((s) => {
-      programPath.scope.registerBinding('module', s);
-    });
-
-    return specifier;
-  }
+  const nameCreate = debug ? createDebugName : (sid) => sid;
 
   return {
     name: 'ast-transform', // not required
@@ -30,6 +17,14 @@ export default function (babel) {
       //},
 
       TaggedTemplateExpression(path, state) {
+        if (
+          t.isMemberExpression(path.node.tag) &&
+          t.isIdentifier(path.node.tag.object) &&
+          t.isIdentifier(path.node.tag.property)
+        ) {
+          // Check that tag.object is a `* as import from 'foliage'`
+          // And property is supported method for compilation
+        }
         // Find original import for current template tag
         const tagName = path.node.tag.name;
         const binding = path.scope.getOwnBinding(tagName);
@@ -38,7 +33,11 @@ export default function (babel) {
           if (resolved) {
             const { module, name } = resolved;
             // Check that template tag imported from supported module
-            if (allowedModules.includes(module.node.source.value)) {
+            // And method from module should be compiled
+            if (
+              allowedModules.includes(module.node.source.value) &&
+              allowedMethods.includes(name)
+            ) {
               // Create stable unique id with readable name
               const derivedName = determineName(t, path);
               const sid = generateStableID(
@@ -48,10 +47,10 @@ export default function (babel) {
                 path.node.loc.start.line,
                 path.node.loc.start.column,
               );
-              const fullName = createName(sid, derivedName);
+              const fullName = nameCreate(sid, derivedName);
 
               //path.scope.rename(name);
-              console.log(path, fullName, module);
+              // console.log(path, fullName, module);
               path.replaceWith(
                 t.objectExpression([
                   t.objectProperty(
@@ -71,7 +70,7 @@ export default function (babel) {
       },
     },
   };
-}
+};
 
 /**
  * Find import declaration for binding and resolve original name
@@ -85,10 +84,8 @@ export default function (babel) {
 function resolveOriginalImport(t, binding) {
   const local = binding.identifier;
   const module = binding.path.find((path) => path.isImportDeclaration());
-  if (!module) return null;
 
-  const isImportedByValue = module.node.importKind === 'value';
-  if (!isImportedByValue) return null;
+  if (!module) return null;
 
   const specifier = module.node.specifiers
     .filter((node) => t.isImportSpecifier(node))
@@ -99,7 +96,7 @@ function resolveOriginalImport(t, binding) {
   return { name: specifier.imported.name, module };
 }
 
-function createName(sid, determined) {
+function createDebugName(sid, determined) {
   if (determined) {
     return `${sid}-${determined}`;
   }

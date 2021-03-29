@@ -1,0 +1,233 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`foliage cssImportedFromPackage: cssImportedFromPackage 1`] = `
+
+import {css} from 'foliage'; const example = css\`\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from 'foliage';
+const example = {
+  content: 'COMPILED CSS HERE',
+  css: 'xb1pwo-example',
+};
+
+
+`;
+
+exports[`foliage cssImportedFromReact: cssImportedFromReact 1`] = `
+
+import {css} from 'foliage-react'; const demo = css\`\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from 'foliage-react';
+const demo = {
+  content: 'COMPILED CSS HERE',
+  css: 'csqqgc-demo',
+};
+
+
+`;
+
+exports[`foliage cssInterpolationInCss: cssInterpolationInCss 1`] = `
+
+import { css } from 'foliage';
+const first = css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`
+const second = css\`
+  color: red;
+  & \${first} {
+    color: white;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from 'foliage';
+const first = {
+  content: 'COMPILED CSS HERE',
+  css: 'yuc9wf-first',
+};
+const second = {
+  content: 'COMPILED CSS HERE',
+  css: 'a8hqie-second',
+};
+
+
+`;
+
+exports[`foliage cssRenamedFromPackage: cssRenamedFromPackage 1`] = `
+
+import {css as demo} from 'foliage'; const example = demo\`\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css as demo } from 'foliage';
+const example = {
+  content: 'COMPILED CSS HERE',
+  css: 'xb1qln-example',
+};
+
+
+`;
+
+exports[`foliage doNotCompilesThirdParty: doNotCompilesThirdParty 1`] = `
+
+import { css, keyframes, createGlobalStyle } from 'styled-components';
+const part = css\`\`
+const anim = keyframes\`\`
+const glob = createGlobalStyle\`\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, keyframes, createGlobalStyle } from 'styled-components';
+const part = css\`\`;
+const anim = keyframes\`\`;
+const glob = createGlobalStyle\`\`;
+
+
+`;
+
+exports[`foliage keyframesAndGlobalStylesShouldCompile: keyframesAndGlobalStylesShouldCompile 1`] = `
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`
+
+const anim = keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`
+
+const glob = createGlobalStyle\`
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = {
+  content: 'COMPILED CSS HERE',
+  css: '-58se77-part',
+};
+const anim = {
+  content: 'COMPILED CSS HERE',
+  keyframes: 'wpxzoa-anim',
+};
+const glob = {
+  content: 'COMPILED CSS HERE',
+  createGlobalStyle: 'l0hjnn-glob',
+};
+
+
+`;
+
+exports[`foliage keyframesInterpolationInCss: keyframesInterpolationInCss 1`] = `
+
+import { css } from 'foliage';
+const anim = keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`
+const element = css\`
+  color: red;
+  animation: \${anim} 3s infinite;
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from 'foliage';
+const anim = keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`;
+const element = {
+  content: 'COMPILED CSS HERE',
+  css: '-2ft437-element',
+};
+
+
+`;
+
+exports[`foliage namespaceSupport: namespaceSupport 1`] = `
+
+import * as example from 'foliage';
+const part = example.css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`
+
+const anim = example.keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`
+
+const glob = example.createGlobalStyle\`
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import * as example from 'foliage';
+const part = example.css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`;
+const anim = example.keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`;
+const glob = example.createGlobalStyle\`
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+\`;
+
+
+`;
+
+exports[`foliage varsNotCompiles: varsNotCompiles 1`] = `
+
+import {vars, css} from 'foliage'; const a = css\`\`; const b = vars\`\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { vars, css } from 'foliage';
+const a = {
+  content: 'COMPILED CSS HERE',
+  css: 'fo0rip-a',
+};
+const b = vars\`\`;
+
+
+`;
+
+exports[`foliage withoutDebugNamesNotAdded: withoutDebugNamesNotAdded 1`] = `
+
+import {css} from 'foliage'; const example = css\`\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from 'foliage';
+const example = {
+  content: 'COMPILED CSS HERE',
+  css: 'xb1pwo',
+};
+
+
+`;
