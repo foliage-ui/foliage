@@ -132,14 +132,7 @@ function generateStableID(babelRoot, fileName, varName, line, column) {
 
 function stripRoot(babelRoot, fileName, omitFirstSlash) {
   //  const {sep, normalize} = require('path')
-  const rawPath = fileName.replace(babelRoot, '');
-  //let normalizedSeq = normalize(rawPath).split(sep)
-  //  if (omitFirstSlash && normalizedSeq.length > 0 && normalizedSeq[0] === '') {
-  //    normalizedSeq = normalizedSeq.slice(1)
-  //  }
-  //  const normalizedPath = normalizedSeq.join('/')
-  //return normalizedPath
-  return rawPath;
+  return fileName.replace(babelRoot, '');
 }
 
 function hashCode(s) {

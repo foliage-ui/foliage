@@ -63,7 +63,7 @@
     "csso": "^4.2.0",
     "cz-conventional-changelog": "^3.2.0",
     "effector": "^21.8.3",
-    "eslint": "^7.23.0",
+    "eslint": "7.10.0",
     "forest": "^0.19.6",
     "husky": "^4.2.5",
     "jest": "^26.0.1",

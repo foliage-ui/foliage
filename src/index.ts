@@ -29,9 +29,9 @@ const idCount = () => {
 
 const styledId = idCount();
 
-type Cb = () => void;
+type Callback = () => void;
 
-export type Component = ((config: Spec | Cb) => void) & {
+export type Component = ((config: Spec | Callback) => void) & {
   STYLED_ID: string;
 };
 
@@ -56,7 +56,7 @@ function join(
   return result.join('');
 }
 
-export type Spec = Parameters<typeof spec>[0] & { fn?: Cb };
+export type Spec = Parameters<typeof spec>[0] & { fn?: Callback };
 
 type Creator = (
   content: TemplateStringsArray,
@@ -77,7 +77,7 @@ const fabric: TagFabric & Partial<TagMap> = (tag: DOMTag) => (
 
   const styles = join(content, interpolations);
 
-  const Component = (config: Spec | Cb) => {
+  const Component = (config: Spec | Callback) => {
     addStyle({ id, styles });
 
     h(tag, () => {
