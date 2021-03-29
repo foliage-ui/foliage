@@ -4,9 +4,12 @@ module.exports = function (babel, options = {}) {
     debug = false,
     allowedModules = ['foliage', 'foliage-react'],
     allowedMethods = ['css', 'keyframes', 'createGlobalStyle'],
+    prefix,
   } = options;
 
-  const nameCreate = debug ? createDebugName : (sid) => sid;
+  const nameCreate = debug
+    ? (sid, name) => [prefix, sid, name].filter(Boolean).join('-')
+    : (sid) => [prefix, sid].filter(Boolean).join('-');
 
   return {
     name: 'ast-transform', // not required
@@ -96,14 +99,9 @@ function resolveOriginalImport(t, binding) {
   return { name: specifier.imported.name, module };
 }
 
-function createDebugName(sid, determined) {
-  if (determined) {
-    return `${sid}-${determined}`;
-  }
-  return sid;
-}
-
 function determineName(t, path) {
+  // TODO: detect when css`` is nested to variants and add simple name `variant-value` without `variants` prefix
+  // TODO: detect when css`` is nested to compound and add name `variant1-value1--variant2-value2`
   if (t.isIdentifier(path)) {
     return path.name;
   }

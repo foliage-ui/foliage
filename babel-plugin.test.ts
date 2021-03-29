@@ -1,7 +1,7 @@
 import pluginTester from 'babel-plugin-tester';
 import plugin from './babel-plugin';
 
-const keyframesAndGlobalStylesShouldCompile = `
+const fullExample = `
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = css\`
   color: black;
@@ -92,11 +92,19 @@ pluginTester({
       pluginOptions: { debug: false },
     },
     cssImportedFromReact: `import {css} from 'foliage-react'; const demo = css\`\``,
-    keyframesAndGlobalStylesShouldCompile,
+    keyframesAndGlobalStylesShouldCompile: fullExample,
     varsNotCompiles: `import {vars, css} from 'foliage'; const a = css\`\`; const b = vars\`\``,
     namespaceSupport,
     doNotCompilesThirdParty,
     cssInterpolationInCss,
     keyframesInterpolationInCss,
+    prefixAdd: {
+      code: fullExample,
+      pluginOptions: { prefix: 'prefix', debug: true },
+    },
+    prefixExistsWithoutDebug: {
+      code: fullExample,
+      pluginOptions: { prefix: 'prefix', debug: false },
+    },
   },
 });

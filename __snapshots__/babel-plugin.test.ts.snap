@@ -201,6 +201,86 @@ const glob = example.createGlobalStyle\`
 
 `;
 
+exports[`foliage prefixAdd: prefixAdd 1`] = `
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`
+
+const anim = keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`
+
+const glob = createGlobalStyle\`
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = {
+  content: 'COMPILED CSS HERE',
+  css: 'prefix--58se77-part',
+};
+const anim = {
+  content: 'COMPILED CSS HERE',
+  keyframes: 'prefix-wpxzoa-anim',
+};
+const glob = {
+  content: 'COMPILED CSS HERE',
+  createGlobalStyle: 'prefix-l0hjnn-glob',
+};
+
+
+`;
+
+exports[`foliage prefixExistsWithoutDebug: prefixExistsWithoutDebug 1`] = `
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`
+
+const anim = keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`
+
+const glob = createGlobalStyle\`
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = {
+  content: 'COMPILED CSS HERE',
+  css: 'prefix--58se77',
+};
+const anim = {
+  content: 'COMPILED CSS HERE',
+  keyframes: 'prefix-wpxzoa',
+};
+const glob = {
+  content: 'COMPILED CSS HERE',
+  createGlobalStyle: 'prefix-l0hjnn',
+};
+
+
+`;
+
 exports[`foliage varsNotCompiles: varsNotCompiles 1`] = `
 
 import {vars, css} from 'foliage'; const a = css\`\`; const b = vars\`\`
