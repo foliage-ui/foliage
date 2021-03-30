@@ -8,7 +8,7 @@ import {css} from 'foliage'; const example = css\`\`
 
 import { css } from 'foliage';
 const example = {
-  content: 'COMPILED CSS HERE',
+  content: '',
   css: 'xb1pwo-example',
 };
 
@@ -23,7 +23,7 @@ import {css} from 'foliage-react'; const demo = css\`\`
 
 import { css } from 'foliage-react';
 const demo = {
-  content: 'COMPILED CSS HERE',
+  content: '',
   css: 'csqqgc-demo',
 };
 
@@ -48,7 +48,7 @@ const second = css\`
 
 import { css } from 'foliage';
 const first = {
-  content: 'COMPILED CSS HERE',
+  content: '.yuc9wf-first{color:#000}.yuc9wf-first>*{padding-left:1rem}',
   css: 'yuc9wf-first',
 };
 const second = {
@@ -67,7 +67,7 @@ import {css as demo} from 'foliage'; const example = demo\`\`
 
 import { css as demo } from 'foliage';
 const example = {
-  content: 'COMPILED CSS HERE',
+  content: '',
   css: 'xb1qln-example',
 };
 
@@ -116,15 +116,16 @@ const glob = createGlobalStyle\`
 
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = {
-  content: 'COMPILED CSS HERE',
+  content: 'WHY THIS IS EMPTY',
   css: '-58se77-part',
 };
 const anim = {
-  content: 'COMPILED CSS HERE',
+  content:
+    '@-webkit-keyframes wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
   keyframes: 'wpxzoa-anim',
 };
 const glob = {
-  content: 'COMPILED CSS HERE',
+  content: 'body{position:fixed;top:0;left:0}',
   createGlobalStyle: 'l0hjnn-glob',
 };
 
@@ -226,15 +227,17 @@ const glob = createGlobalStyle\`
 
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = {
-  content: 'COMPILED CSS HERE',
+  content:
+    '.prefix--58se77-part{color:#000}.prefix--58se77-part>*{padding-left:1rem}',
   css: 'prefix--58se77-part',
 };
 const anim = {
-  content: 'COMPILED CSS HERE',
+  content:
+    '@-webkit-keyframes prefix-wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes prefix-wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
   keyframes: 'prefix-wpxzoa-anim',
 };
 const glob = {
-  content: 'COMPILED CSS HERE',
+  content: 'body{position:fixed;top:0;left:0}',
   createGlobalStyle: 'prefix-l0hjnn-glob',
 };
 
@@ -266,15 +269,16 @@ const glob = createGlobalStyle\`
 
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = {
-  content: 'COMPILED CSS HERE',
+  content: '.prefix--58se77{color:#000}.prefix--58se77>*{padding-left:1rem}',
   css: 'prefix--58se77',
 };
 const anim = {
-  content: 'COMPILED CSS HERE',
+  content:
+    '@-webkit-keyframes prefix-wpxzoa{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes prefix-wpxzoa{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
   keyframes: 'prefix-wpxzoa',
 };
 const glob = {
-  content: 'COMPILED CSS HERE',
+  content: 'body{position:fixed;top:0;left:0}',
   createGlobalStyle: 'prefix-l0hjnn',
 };
 
@@ -289,7 +293,7 @@ import {vars, css} from 'foliage'; const a = css\`\`; const b = vars\`\`
 
 import { vars, css } from 'foliage';
 const a = {
-  content: 'COMPILED CSS HERE',
+  content: '',
   css: 'fo0rip-a',
 };
 const b = vars\`\`;
@@ -305,7 +309,7 @@ import {css} from 'foliage'; const example = css\`\`
 
 import { css } from 'foliage';
 const example = {
-  content: 'COMPILED CSS HERE',
+  content: '',
   css: 'xb1pwo',
 };
 

@@ -4,8 +4,6 @@ const nested = require('postcss-nested');
 const csso = require('csso');
 
 // https://github.com/wbyoung/babel-plugin-transform-postcss/blob/7d0cc7f9df569e9df6c78ae55ec6f86bac362c40/src/plugin.js
-const path = require('path');
-const { execFileSync, spawn } = require('child_process');
 
 module.exports = function (babel, options = {}) {
   const { types: t } = babel;
@@ -24,6 +22,7 @@ module.exports = function (babel, options = {}) {
 
   function compile(source, file = 'source.css') {
     const result = compiler.process(source, { from: file });
+    return csso.minify(result.css).css;
     // let output = deasync(result.then((a) => a));
     // if (!output || !result.processed) {
     //   throw new Error(
@@ -56,12 +55,12 @@ module.exports = function (babel, options = {}) {
         if (binding) {
           const resolved = resolveOriginalImport(t, binding);
           if (resolved) {
-            const { module, name } = resolved;
+            const { module, methodName } = resolved;
             // Check that template tag imported from supported module
             // And method from module should be compiled
             if (
               allowedModules.includes(module.node.source.value) &&
-              allowedMethods.includes(name)
+              allowedMethods.includes(methodName)
             ) {
               // Create stable unique id with readable name
               const derivedName = determineName(t, path);
@@ -81,7 +80,8 @@ module.exports = function (babel, options = {}) {
               // Process only tagged literals without interpolations
               if (path.node.quasi.quasis.length === 1) {
                 const source = path.node.quasi.quasis[0].value.raw;
-                const withClass = `.${fullName} {${source}}`;
+
+                const withClass = createContainer(source, methodName, fullName);
                 output = compile(withClass);
               }
 
@@ -92,7 +92,7 @@ module.exports = function (babel, options = {}) {
                     t.stringLiteral(output),
                   ),
                   t.objectProperty(
-                    t.identifier(name),
+                    t.identifier(methodName),
                     t.stringLiteral(fullName),
                   ),
                 ]),
@@ -105,6 +105,19 @@ module.exports = function (babel, options = {}) {
     },
   };
 };
+
+function createContainer(source, type, fullName) {
+  if (type === 'css') {
+    return `.${fullName}{${source}}`;
+  } else if (type === 'keyframes') {
+    return `@keyframes ${fullName}{${source}}`;
+  } else if (type === 'createGlobalStyle') {
+    return source;
+  }
+  throw new TypeError(
+    `Unsupported node type "${type}" detected on "${fullName}" with source "${source}"`,
+  );
+}
 
 /**
  * Find import declaration for binding and resolve original name
@@ -127,7 +140,7 @@ function resolveOriginalImport(t, binding) {
 
   if (!specifier) return null;
 
-  return { name: specifier.imported.name, module };
+  return { methodName: specifier.imported.name, module };
 }
 
 function determineName(t, path) {
