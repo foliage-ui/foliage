@@ -1,3 +1,12 @@
+const postcss = require('postcss');
+const autoprefixer = require('autoprefixer');
+const nested = require('postcss-nested');
+const csso = require('csso');
+
+// https://github.com/wbyoung/babel-plugin-transform-postcss/blob/7d0cc7f9df569e9df6c78ae55ec6f86bac362c40/src/plugin.js
+const path = require('path');
+const { execFileSync, spawn } = require('child_process');
+
 module.exports = function (babel, options = {}) {
   const { types: t } = babel;
   const {
@@ -10,6 +19,19 @@ module.exports = function (babel, options = {}) {
   const nameCreate = debug
     ? (sid, name) => [prefix, sid, name].filter(Boolean).join('-')
     : (sid) => [prefix, sid].filter(Boolean).join('-');
+
+  const compiler = postcss([autoprefixer(), nested()]);
+
+  function compile(source, file = 'source.css') {
+    const result = compiler.process(source, { from: file });
+    // let output = deasync(result.then((a) => a));
+    // if (!output || !result.processed) {
+    //   throw new Error(
+    //     'PostCSS cannot compile with async plugins, because babel does not support async processing',
+    //   );
+    // }
+    // return csso.minify(result.result.css).css;
+  }
 
   return {
     name: 'ast-transform', // not required
@@ -53,12 +75,21 @@ module.exports = function (babel, options = {}) {
               const fullName = nameCreate(sid, derivedName);
 
               //path.scope.rename(name);
-              // console.log(path, fullName, module);
+
+              let output = 'COMPILED CSS HERE';
+
+              // Process only tagged literals without interpolations
+              if (path.node.quasi.quasis.length === 1) {
+                const source = path.node.quasi.quasis[0].value.raw;
+                const withClass = `.${fullName} {${source}}`;
+                output = compile(withClass);
+              }
+
               path.replaceWith(
                 t.objectExpression([
                   t.objectProperty(
                     t.identifier('content'),
-                    t.stringLiteral('COMPILED CSS HERE'),
+                    t.stringLiteral(output),
                   ),
                   t.objectProperty(
                     t.identifier(name),
