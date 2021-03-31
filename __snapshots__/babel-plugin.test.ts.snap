@@ -2,13 +2,13 @@
 
 exports[`foliage cssImportedFromPackage: cssImportedFromPackage 1`] = `
 
-import {css} from 'foliage'; const example = css\`\`
+import {css} from 'foliage'; const example = css\`color: black\`
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 import { css } from 'foliage';
 const example = {
-  content: '',
+  content: '.xb1pwo-example{color:#000}',
   css: 'xb1pwo-example',
 };
 
@@ -17,13 +17,13 @@ const example = {
 
 exports[`foliage cssImportedFromReact: cssImportedFromReact 1`] = `
 
-import {css} from 'foliage-react'; const demo = css\`\`
+import {css} from 'foliage-react'; const demo = css\`.global & { [data-demo="a"] {color: black} }\`
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 import { css } from 'foliage-react';
 const demo = {
-  content: '',
+  content: '.global .csqqgc-demo [data-demo=a]{color:#000}',
   css: 'csqqgc-demo',
 };
 
@@ -61,13 +61,13 @@ const second = {
 
 exports[`foliage cssRenamedFromPackage: cssRenamedFromPackage 1`] = `
 
-import {css as demo} from 'foliage'; const example = demo\`\`
+import {css as demo} from 'foliage'; const example = demo\`justify-content: center;\`
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 import { css as demo } from 'foliage';
 const example = {
-  content: '',
+  content: '.xb1qln-example{justify-content:center}',
   css: 'xb1qln-example',
 };
 
@@ -77,16 +77,18 @@ const example = {
 exports[`foliage doNotCompilesThirdParty: doNotCompilesThirdParty 1`] = `
 
 import { css, keyframes, createGlobalStyle } from 'styled-components';
-const part = css\`\`
-const anim = keyframes\`\`
-const glob = createGlobalStyle\`\`
+const part = css\`color:black;\`
+const anim = keyframes\`from{color: black;} to {color: white;}\`
+const glob = createGlobalStyle\`body{display: grid}\`
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 import { css, keyframes, createGlobalStyle } from 'styled-components';
-const part = css\`\`;
-const anim = keyframes\`\`;
-const glob = createGlobalStyle\`\`;
+const part = css\`
+  color: black;
+\`;
+const anim = keyframes\`from{color: black;} to {color: white;}\`;
+const glob = createGlobalStyle\`body{display: grid}\`;
 
 
 `;
@@ -287,29 +289,29 @@ const glob = {
 
 exports[`foliage varsNotCompiles: varsNotCompiles 1`] = `
 
-import {vars, css} from 'foliage'; const a = css\`\`; const b = vars\`\`
+import {vars, css} from 'foliage'; const a = css\`outline: none;\`; const b = vars\`--random: 1px;\`
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 import { vars, css } from 'foliage';
 const a = {
-  content: '',
+  content: '.fo0rip-a{outline:0}',
   css: 'fo0rip-a',
 };
-const b = vars\`\`;
+const b = vars\`--random: 1px;\`;
 
 
 `;
 
 exports[`foliage withoutDebugNamesNotAdded: withoutDebugNamesNotAdded 1`] = `
 
-import {css} from 'foliage'; const example = css\`\`
+import {css} from 'foliage'; const example = css\`span{display:grid}\`
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
 import { css } from 'foliage';
 const example = {
-  content: '',
+  content: '.xb1pwo span{display:grid}',
   css: 'xb1pwo',
 };
 

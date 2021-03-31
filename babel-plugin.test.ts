@@ -45,9 +45,9 @@ const glob = example.createGlobalStyle\`
 
 const doNotCompilesThirdParty = `
 import { css, keyframes, createGlobalStyle } from 'styled-components';
-const part = css\`\`
-const anim = keyframes\`\`
-const glob = createGlobalStyle\`\`
+const part = css\`color:black;\`
+const anim = keyframes\`from{color: black;} to {color: white;}\`
+const glob = createGlobalStyle\`body{display: grid}\`
 `;
 
 const cssInterpolationInCss = `
@@ -85,15 +85,15 @@ pluginTester({
   babelOptions: { filename: __filename },
   snapshot: true,
   tests: {
-    cssImportedFromPackage: `import {css} from 'foliage'; const example = css\`\``,
-    cssRenamedFromPackage: `import {css as demo} from 'foliage'; const example = demo\`\``,
+    cssImportedFromPackage: `import {css} from 'foliage'; const example = css\`color: black\``,
+    cssRenamedFromPackage: `import {css as demo} from 'foliage'; const example = demo\`justify-content: center;\``,
     withoutDebugNamesNotAdded: {
-      code: `import {css} from 'foliage'; const example = css\`\``,
+      code: `import {css} from 'foliage'; const example = css\`span{display:grid}\``,
       pluginOptions: { debug: false },
     },
-    cssImportedFromReact: `import {css} from 'foliage-react'; const demo = css\`\``,
+    cssImportedFromReact: `import {css} from 'foliage-react'; const demo = css\`.global & { [data-demo="a"] {color: black} }\``,
     keyframesAndGlobalStylesShouldCompile: fullExample,
-    varsNotCompiles: `import {vars, css} from 'foliage'; const a = css\`\`; const b = vars\`\``,
+    varsNotCompiles: `import {vars, css} from 'foliage'; const a = css\`outline: none;\`; const b = vars\`--random: 1px;\``,
     namespaceSupport,
     doNotCompilesThirdParty,
     cssInterpolationInCss,
