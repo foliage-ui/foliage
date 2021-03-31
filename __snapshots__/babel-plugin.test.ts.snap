@@ -52,7 +52,7 @@ const first = {
   css: 'yuc9wf-first',
 };
 const second = {
-  content: '/*INTERPOLATION IS NOT SUPPORTED YET*/',
+  content: \`.a8hqie-second{color:red}.a8hqie-second \${first}{color:#fff}\`,
   css: 'a8hqie-second',
 };
 
@@ -89,6 +89,60 @@ const part = css\`
 \`;
 const anim = keyframes\`from{color: black;} to {color: white;}\`;
 const glob = createGlobalStyle\`body{display: grid}\`;
+
+
+`;
+
+exports[`foliage fullInterpolationExample: fullInterpolationExample 1`] = `
+
+import { css, keyframes } from 'foliage';
+
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  }
+}
+
+const first = css\`
+  display: block;
+\`
+
+const pulse = keyframes\`
+  0% { opacity: 1 }
+  50% { opacity: 0.2 }
+  100% { opacity: 1 }
+\`
+
+const second = css\`
+  font-size: var(\${theme.size.normal});
+  animation: 1s ease-in-out infinite \${pulse};
+
+  \${first} & {
+    display: flex;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, keyframes } from 'foliage';
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  },
+};
+const first = {
+  content: '.-di37k0-first{display:block}',
+  css: '-di37k0-first',
+};
+const pulse = {
+  content:
+    '@-webkit-keyframes qgp328-pulse{0%,to{opacity:1}50%{opacity:.2}}@keyframes qgp328-pulse{0%,to{opacity:1}50%{opacity:.2}}',
+  keyframes: 'qgp328-pulse',
+};
+const second = {
+  content: \`.icc4e8-second{font-size:var(\${theme.size.normal});-webkit-animation:1s ease-in-out infinite \${pulse};animation:1s ease-in-out infinite \${pulse}}\${first} .icc4e8-second{display:flex}\`,
+  css: 'icc4e8-second',
+};
 
 
 `;
@@ -136,26 +190,29 @@ const glob = {
 
 exports[`foliage keyframesInterpolationInCss: keyframesInterpolationInCss 1`] = `
 
-import { css } from 'foliage';
+import { css, keyframes } from 'foliage';
+
 const anim = keyframes\`
   0% { transform: rotate(0deg) }
   100% { transform: rotate(180deg) }
 \`
+
 const element = css\`
   color: red;
-  animation: \${anim} 3s infinite;
+  animation: 3s ease-in 1s infinite \${anim};
 \`
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { css } from 'foliage';
-const anim = keyframes\`
-  0% { transform: rotate(0deg) }
-  100% { transform: rotate(180deg) }
-\`;
+import { css, keyframes } from 'foliage';
+const anim = {
+  content:
+    '@-webkit-keyframes utri3i-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes utri3i-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'utri3i-anim',
+};
 const element = {
-  content: '/*INTERPOLATION IS NOT SUPPORTED YET*/',
-  css: '70rkv4-element',
+  content: \`.-na48dc-element{color:red;-webkit-animation:3s ease-in 1s infinite \${anim};animation:3s ease-in 1s infinite \${anim}}\`,
+  css: '-na48dc-element',
 };
 
 

@@ -69,14 +69,45 @@ const second = css\`
 `;
 
 const keyframesInterpolationInCss = `
-import { css } from 'foliage';
+import { css, keyframes } from 'foliage';
+
 const anim = keyframes\`
   0% { transform: rotate(0deg) }
   100% { transform: rotate(180deg) }
 \`
+
 const element = css\`
   color: red;
-  animation: \${anim} 3s infinite;
+  animation: 3s ease-in 1s infinite \${anim};
+\`
+`;
+
+const interpolation = `
+import { css, keyframes } from 'foliage';
+
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  }
+}
+
+const first = css\`
+  display: block;
+\`
+
+const pulse = keyframes\`
+  0% { opacity: 1 }
+  50% { opacity: 0.2 }
+  100% { opacity: 1 }
+\`
+
+const second = css\`
+  font-size: var(\${theme.size.normal});
+  animation: 1s ease-in-out infinite \${pulse};
+
+  \${first} & {
+    display: flex;
+  }
 \`
 `;
 
@@ -110,5 +141,6 @@ pluginTester({
       code: fullExample,
       pluginOptions: { prefix: 'prefix', debug: false },
     },
+    fullInterpolationExample: interpolation,
   },
 });

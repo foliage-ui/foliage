@@ -35,7 +35,7 @@ module.exports = function (babel, options = {}) {
       //  path.scope.rename('mor');
       //},
 
-      TaggedTemplateExpression(path, state) {
+      TaggedTemplateExpression(path, _state) {
         resolveAllowedMethod(t, path, ({ methodName, moduleName }) => {
           // Check that template tag imported from allowed module
           // And method supports for compilation
@@ -54,21 +54,59 @@ module.exports = function (babel, options = {}) {
             );
             const fullName = nameCreate(sid, derivedName);
 
-            let output = '/*INTERPOLATION IS NOT SUPPORTED YET*/';
+            let content = null;
 
             // Process only tagged literals without interpolations
             if (path.node.quasi.quasis.length === 1) {
               const source = path.node.quasi.quasis[0].value.raw;
-              const withClass = createContainer(source, methodName, fullName);
-              output = compile(withClass);
+              const wrapped = createContainer(source, methodName, fullName);
+              const output = compile(wrapped);
+              content = t.stringLiteral(output);
+            } else {
+              const { quasis, expressions } = path.node.quasi;
+              const draftCssSource = [quasis[0].value.cooked];
+              expressions.forEach((node, index) => {
+                draftCssSource.push(interpolationMark(index));
+                draftCssSource.push(quasis[index + 1].value.cooked);
+              });
+              const source = draftCssSource.join(' ');
+              const wrapped = createContainer(source, methodName, fullName);
+              const output = compile(wrapped);
+
+              let chunks = [output];
+              const interpolations = [];
+
+              expressions.forEach((node, index) => {
+                const marker = interpolationMark(index);
+                const result = [];
+                // iterate over each quasis
+                chunks.forEach((chunk) => {
+                  // if quasis has interpolation, split it to few parts
+                  if (chunk.includes(marker)) {
+                    chunk.split(marker).forEach((part, index, list) => {
+                      const last = index === list.length - 1;
+                      result.push(part);
+                      // Add expression only after not last
+                      if (!last) interpolations.push(node);
+                    });
+                  } else {
+                    result.push(chunk);
+                  }
+                });
+                chunks = result;
+              });
+
+              content = t.templateLiteral(
+                chunks.map((item, index, list) =>
+                  t.templateElement({ raw: item }, index === list.length - 1),
+                ),
+                interpolations,
+              );
             }
 
             path.replaceWith(
               t.objectExpression([
-                t.objectProperty(
-                  t.identifier('content'),
-                  t.stringLiteral(output),
-                ),
+                t.objectProperty(t.identifier('content'), content),
                 t.objectProperty(
                   t.identifier(methodName),
                   t.stringLiteral(fullName),
@@ -157,6 +195,8 @@ module.exports = function (babel, options = {}) {
     },
   };
 };
+
+const interpolationMark = (index) => `__foliageInterpolationIndex${index}`;
 
 function createContainer(source, type, fullName) {
   if (type === 'css') {
@@ -273,7 +313,7 @@ function generateStableID(babelRoot, fileName, varName, line, column) {
   return hashCode(`${varName} ${normalizedPath} [${line}, ${column}]`);
 }
 
-function stripRoot(babelRoot, fileName, omitFirstSlash) {
+function stripRoot(babelRoot, fileName, _omitFirstSlash) {
   //  const {sep, normalize} = require('path')
   return fileName.replace(babelRoot, '');
 }
