@@ -1,3 +1,4 @@
+/* eslint-disable */
 //https://astexplorer.net/#/gist/68f6ac120f7543e3efc6a43b0904e107/9c084c624403c8dac19bce8fc3b3f8f4752f7271
 import { css, keyframes, createGlobalStyle } from 'foliage-react';
 

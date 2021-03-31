@@ -1,3 +1,4 @@
+/* eslint-disable */
 const postcss = require('postcss');
 const autoprefixer = require('autoprefixer');
 const nested = require('postcss-nested');

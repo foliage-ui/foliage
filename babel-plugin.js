@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies, sonarjs/cognitive-complexity, no-bitwise */
 const postcss = require('postcss');
 const autoprefixer = require('autoprefixer');
 const nested = require('postcss-nested');
