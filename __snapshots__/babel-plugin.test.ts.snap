@@ -182,23 +182,28 @@ const glob = example.createGlobalStyle\`
   }
 \`
 
+const theme = example.vars\`
+  --demo: 123px;
+\`
+
       ↓ ↓ ↓ ↓ ↓ ↓
 
 import * as example from 'foliage';
-const part = example.css\`
-  color: black;
-  & > * { padding-left: 1rem; }
-\`;
-const anim = example.keyframes\`
-  0% { transform: rotate(0deg) }
-  100% { transform: rotate(180deg) }
-\`;
-const glob = example.createGlobalStyle\`
-  body {
-    position: fixed;
-    top: 0;
-    left: 0;
-  }
+const part = {
+  content: '.pr0ig0-part{color:#000}.pr0ig0-part>*{padding-left:1rem}',
+  css: 'pr0ig0-part',
+};
+const anim = {
+  content:
+    '@-webkit-keyframes wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'wpxzoa-anim',
+};
+const glob = {
+  content: 'body{position:fixed;top:0;left:0}',
+  createGlobalStyle: 'l0hjnn-glob',
+};
+const theme = example.vars\`
+  --demo: 123px;
 \`;
 
 

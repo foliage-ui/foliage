@@ -36,65 +36,123 @@ module.exports = function (babel, options = {}) {
       //},
 
       TaggedTemplateExpression(path, state) {
-        if (
-          t.isMemberExpression(path.node.tag) &&
-          t.isIdentifier(path.node.tag.object) &&
-          t.isIdentifier(path.node.tag.property)
-        ) {
-          // Check that tag.object is a `* as import from 'foliage'`
-          // And property is supported method for compilation
-        }
-        // Find original import for current template tag
-        const tagName = path.node.tag.name;
-        const binding = path.scope.getOwnBinding(tagName);
-        if (binding) {
-          const resolved = resolveOriginalImport(t, binding);
-          if (resolved) {
-            const { module, methodName } = resolved;
-            // Check that template tag imported from supported module
-            // And method from module should be compiled
-            if (
-              allowedModules.includes(module.node.source.value) &&
-              allowedMethods.includes(methodName)
-            ) {
-              // Create stable unique id with readable name
-              const derivedName = determineName(t, path);
-              const sid = generateStableID(
-                '',
-                '',
-                derivedName,
-                path.node.loc.start.line,
-                path.node.loc.start.column,
-              );
-              const fullName = nameCreate(sid, derivedName);
+        resolveAllowedMethod(t, path, ({ methodName, moduleName }) => {
+          // Check that template tag imported from allowed module
+          // And method supports for compilation
+          if (
+            allowedModules.includes(moduleName) &&
+            allowedMethods.includes(methodName)
+          ) {
+            // Create stable unique id with readable name
+            const derivedName = determineName(t, path);
+            const sid = generateStableID(
+              '', // babelRoot
+              '', // fileName
+              derivedName,
+              path.node.loc.start.line,
+              path.node.loc.start.column,
+            );
+            const fullName = nameCreate(sid, derivedName);
 
-              //path.scope.rename(name);
+            let output = '/*INTERPOLATION IS NOT SUPPORTED YET*/';
 
-              let output = '/*INTERPOLATION IS NOT SUPPORTED YET*/';
-
-              // Process only tagged literals without interpolations
-              if (path.node.quasi.quasis.length === 1) {
-                const source = path.node.quasi.quasis[0].value.raw;
-                const withClass = createContainer(source, methodName, fullName);
-                output = compile(withClass);
-              }
-
-              path.replaceWith(
-                t.objectExpression([
-                  t.objectProperty(
-                    t.identifier('content'),
-                    t.stringLiteral(output),
-                  ),
-                  t.objectProperty(
-                    t.identifier(methodName),
-                    t.stringLiteral(fullName),
-                  ),
-                ]),
-              );
-              // console.log(Object.keys(path.__proto__).sort())
+            // Process only tagged literals without interpolations
+            if (path.node.quasi.quasis.length === 1) {
+              const source = path.node.quasi.quasis[0].value.raw;
+              const withClass = createContainer(source, methodName, fullName);
+              output = compile(withClass);
             }
+
+            path.replaceWith(
+              t.objectExpression([
+                t.objectProperty(
+                  t.identifier('content'),
+                  t.stringLiteral(output),
+                ),
+                t.objectProperty(
+                  t.identifier(methodName),
+                  t.stringLiteral(fullName),
+                ),
+              ]),
+            );
           }
-        }
+        });
+
+        // if (
+        //   t.isMemberExpression(path.node.tag) &&
+        //   t.isIdentifier(path.node.tag.object) &&
+        //   t.isIdentifier(path.node.tag.property)
+        // ) {
+        //   // Check that tag.object is a `* as import from 'foliage'`
+        //   // And property is supported method for compilation
+        //   const objectName = path.node.tag.object.name;
+        //   const methodName = path.node.tag.property.name;
+        //   const binding = path.scope.getOwnBinding(objectName);
+        //   if (binding) {
+        //     const resolved = resolveNamespaceImport(t, binding);
+        //     if (resolved) {
+        //       const { specifier, module } = resolved;
+
+        //       if (
+        //         allowedModules.includes(module.node.source.value) &&
+        //         allowedMethods.includes(methodName)
+        //       ) {
+        //         console.log('BANG!');
+        //       }
+        //     }
+        //   }
+        // }
+        // // Find original import for current template tag
+        // const tagName = path.node.tag.name;
+        // const binding = path.scope.getOwnBinding(tagName);
+        // if (binding) {
+        //   const resolved = resolveSpecifierImport(t, binding);
+        //   if (resolved) {
+        //     const { module, methodName } = resolved;
+        //     // Check that template tag imported from supported module
+        //     // And method from module should be compiled
+        //     if (
+        //       allowedModules.includes(module.node.source.value) &&
+        //       allowedMethods.includes(methodName)
+        //     ) {
+        //       // Create stable unique id with readable name
+        //       const derivedName = determineName(t, path);
+        //       const sid = generateStableID(
+        //         '',
+        //         '',
+        //         derivedName,
+        //         path.node.loc.start.line,
+        //         path.node.loc.start.column,
+        //       );
+        //       const fullName = nameCreate(sid, derivedName);
+
+        //       //path.scope.rename(name);
+
+        //       let output = '/*INTERPOLATION IS NOT SUPPORTED YET*/';
+
+        //       // Process only tagged literals without interpolations
+        //       if (path.node.quasi.quasis.length === 1) {
+        //         const source = path.node.quasi.quasis[0].value.raw;
+        //         const withClass = createContainer(source, methodName, fullName);
+        //         output = compile(withClass);
+        //       }
+
+        //       path.replaceWith(
+        //         t.objectExpression([
+        //           t.objectProperty(
+        //             t.identifier('content'),
+        //             t.stringLiteral(output),
+        //           ),
+        //           t.objectProperty(
+        //             t.identifier(methodName),
+        //             t.stringLiteral(fullName),
+        //           ),
+        //         ]),
+        //       );
+        //       // console.log(Object.keys(path.__proto__).sort())
+        //     }
+        //   }
+        // }
       },
     },
   };
@@ -116,6 +174,41 @@ function createContainer(source, type, fullName) {
 }
 
 /**
+ *
+ * @param {(p: { methodName: string, moduleName: string }) => void} fn
+ */
+function resolveAllowedMethod(t, path, fn) {
+  // Check that tag.object is a `* as import from 'foliage'`
+  if (
+    t.isMemberExpression(path.node.tag) &&
+    t.isIdentifier(path.node.tag.object) &&
+    t.isIdentifier(path.node.tag.property)
+  ) {
+    const objectName = path.node.tag.object.name;
+    const methodName = path.node.tag.property.name;
+    const binding = path.scope.getOwnBinding(objectName);
+    if (binding) {
+      const resolved = resolveNamespaceImport(t, binding);
+      if (resolved) {
+        const moduleName = resolved.module.node.source.value;
+        fn({ moduleName, methodName });
+      }
+    }
+  } else if (t.isIdentifier(path.node.tag)) {
+    const localMethodName = path.node.tag.name;
+    const binding = path.scope.getOwnBinding(localMethodName);
+    if (binding) {
+      const resolved = resolveSpecifierImport(t, binding);
+      if (resolved) {
+        const { methodName, module } = resolved;
+        const moduleName = module.node.source.value;
+        fn({ methodName, moduleName });
+      }
+    }
+  }
+}
+
+/**
  * Find import declaration for binding and resolve original name
  * For example we have next two lines:
  * import { foo as bar } from 'module';
@@ -124,7 +217,7 @@ function createContainer(source, type, fullName) {
  * This function allows to resolve `foo` from `bar` usage
  * with import declaration
  */
-function resolveOriginalImport(t, binding) {
+function resolveSpecifierImport(t, binding) {
   const local = binding.identifier;
   const module = binding.path.find((path) => path.isImportDeclaration());
 
@@ -137,6 +230,18 @@ function resolveOriginalImport(t, binding) {
   if (!specifier) return null;
 
   return { methodName: specifier.imported.name, module };
+}
+
+function resolveNamespaceImport(t, binding) {
+  const module = binding.path.find((path) => path.isImportDeclaration());
+  if (!module) return null;
+
+  const specifier = module.node.specifiers.find((node) =>
+    t.isImportNamespaceSpecifier(node),
+  );
+  if (!specifier) return null;
+
+  return { module, specifier };
 }
 
 function determineName(t, path) {

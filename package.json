@@ -21,9 +21,7 @@
   "repository": {
     "url": "https://github.com/sergeysova/foliage"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "keywords": [
     "components",
     "dom",
@@ -55,12 +53,10 @@
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.5",
     "@typescript-eslint/parser": "^4.4.1",
-    "autoprefixer": "^10.2.4",
     "babel-jest": "^26.6.3",
     "babel-plugin-tester": "^10.0.0",
     "change-case": "^4.1.2",
     "commitizen": "^4.1.2",
-    "csso": "^4.2.0",
     "cz-conventional-changelog": "^3.2.0",
     "effector": "^21.8.3",
     "eslint": "7.10.0",
@@ -69,9 +65,6 @@
     "jest": "^26.0.1",
     "lint-staged": "^10.2.2",
     "parcel-bundler": "^1.12.4",
-    "postcss": "^8.2.6",
-    "postcss-csso": "^5.0.0",
-    "postcss-nested": "^5.0.3",
     "prettier": "^2.0.5",
     "sharec-sova-config": "^0.1.0",
     "terser-webpack-plugin": "^3.0.2",
@@ -87,6 +80,10 @@
     "version": "0.1.1"
   },
   "dependencies": {
+    "autoprefixer": "^10.2.4",
+    "csso": "^4.2.0",
+    "postcss": "^8.2.6",
+    "postcss-nested": "^5.0.3",
     "stylis": "^4.0.0"
   },
   "peerDependencies": {
@@ -94,9 +91,6 @@
     "forest": "^0.19.6"
   },
   "browserslist": {
-    "development": [
-      "last 1 ie version",
-      "last 5 chrome version"
-    ]
+    "development": ["last 1 ie version", "last 5 chrome version"]
   }
 }

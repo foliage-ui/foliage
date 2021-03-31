@@ -41,6 +41,10 @@ const glob = example.createGlobalStyle\`
     left: 0;
   }
 \`
+
+const theme = example.vars\`
+  --demo: 123px;
+\`
 `;
 
 const doNotCompilesThirdParty = `
