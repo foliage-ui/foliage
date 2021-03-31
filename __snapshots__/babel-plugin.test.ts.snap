@@ -52,7 +52,7 @@ const first = {
   css: 'yuc9wf-first',
 };
 const second = {
-  content: 'COMPILED CSS HERE',
+  content: '/*INTERPOLATION IS NOT SUPPORTED YET*/',
   css: 'a8hqie-second',
 };
 
@@ -154,7 +154,7 @@ const anim = keyframes\`
   100% { transform: rotate(180deg) }
 \`;
 const element = {
-  content: 'COMPILED CSS HERE',
+  content: '/*INTERPOLATION IS NOT SUPPORTED YET*/',
   css: '70rkv4-element',
 };
 

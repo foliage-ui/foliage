@@ -69,7 +69,7 @@ module.exports = function (babel, options = {}) {
 
               //path.scope.rename(name);
 
-              let output = 'COMPILED CSS HERE';
+              let output = '/*INTERPOLATION IS NOT SUPPORTED YET*/';
 
               // Process only tagged literals without interpolations
               if (path.node.quasi.quasis.length === 1) {
