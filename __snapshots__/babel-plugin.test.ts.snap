@@ -116,8 +116,8 @@ const glob = createGlobalStyle\`
 
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = {
-  content: 'WHY THIS IS EMPTY',
-  css: '-58se77-part',
+  content: '.pr0ig0-part{color:#000}.pr0ig0-part>*{padding-left:1rem}',
+  css: 'pr0ig0-part',
 };
 const anim = {
   content:
@@ -153,7 +153,7 @@ const anim = keyframes\`
 \`;
 const element = {
   content: 'COMPILED CSS HERE',
-  css: '-2ft437-element',
+  css: '70rkv4-element',
 };
 
 
@@ -228,8 +228,8 @@ const glob = createGlobalStyle\`
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = {
   content:
-    '.prefix--58se77-part{color:#000}.prefix--58se77-part>*{padding-left:1rem}',
-  css: 'prefix--58se77-part',
+    '.prefix-pr0ig0-part{color:#000}.prefix-pr0ig0-part>*{padding-left:1rem}',
+  css: 'prefix-pr0ig0-part',
 };
 const anim = {
   content:
@@ -269,8 +269,8 @@ const glob = createGlobalStyle\`
 
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = {
-  content: '.prefix--58se77{color:#000}.prefix--58se77>*{padding-left:1rem}',
-  css: 'prefix--58se77',
+  content: '.prefix-pr0ig0{color:#000}.prefix-pr0ig0>*{padding-left:1rem}',
+  css: 'prefix-pr0ig0',
 };
 const anim = {
   content:

@@ -22,14 +22,8 @@ module.exports = function (babel, options = {}) {
 
   function compile(source, file = 'source.css') {
     const result = compiler.process(source, { from: file });
-    return csso.minify(result.css).css;
-    // let output = deasync(result.then((a) => a));
-    // if (!output || !result.processed) {
-    //   throw new Error(
-    //     'PostCSS cannot compile with async plugins, because babel does not support async processing',
-    //   );
-    // }
-    // return csso.minify(result.result.css).css;
+    const compiled = result.css;
+    return csso.minify(compiled).css;
   }
 
   return {
@@ -80,7 +74,6 @@ module.exports = function (babel, options = {}) {
               // Process only tagged literals without interpolations
               if (path.node.quasi.quasis.length === 1) {
                 const source = path.node.quasi.quasis[0].value.raw;
-
                 const withClass = createContainer(source, methodName, fullName);
                 output = compile(withClass);
               }
@@ -109,9 +102,11 @@ module.exports = function (babel, options = {}) {
 function createContainer(source, type, fullName) {
   if (type === 'css') {
     return `.${fullName}{${source}}`;
-  } else if (type === 'keyframes') {
+  }
+  if (type === 'keyframes') {
     return `@keyframes ${fullName}{${source}}`;
-  } else if (type === 'createGlobalStyle') {
+  }
+  if (type === 'createGlobalStyle') {
     return source;
   }
   throw new TypeError(
@@ -152,10 +147,8 @@ function determineName(t, path) {
   if (t.isLiteral(path)) {
     return String(path.value);
   }
-  if (t.isVariableDeclarator(path.parent)) {
-    if (t.isIdentifier(path.parent.id)) {
-      return path.parent.id.name;
-    }
+  if (t.isVariableDeclarator(path.parent) && t.isIdentifier(path.parent.id)) {
+    return path.parent.id.name;
   }
   if (t.isObjectExpression(path.parent)) {
     return determineName(t, path.parentPath);
@@ -184,5 +177,6 @@ function hashCode(s) {
   let i = 0;
   if (s.length > 0)
     while (i < s.length) h = ((h << 5) - h + s.charCodeAt(i++)) | 0;
-  return h.toString(36);
+  const d = h < 0 ? (-1 * h) << 5 : h;
+  return d.toString(36);
 }
