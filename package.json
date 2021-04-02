@@ -7,7 +7,7 @@
   "homepage": "https://foliage.dev",
   "sideEffects": false,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "commit": "git-cz",
     "lint": "eslint ./",
     "build": "tsc --build ./tsconfig.build.json && webpack",
@@ -39,22 +39,27 @@
     }
   },
   "devDependencies": {
-    "@babel/core": "^7.10.2",
-    "@babel/preset-env": "^7.10.2",
-    "@babel/preset-typescript": "^7.10.1",
+    "@babel/cli": "^7.12.17",
+    "@babel/core": "^7.13.14",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/preset-typescript": "^7.13.0",
+    "@babel/types": "^7.12.17",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "@eslint-kit/eslint-config-base": "^2.1.2",
+    "@eslint-kit/eslint-config-base": "^3.0.0",
     "@eslint-kit/eslint-config-node": "^2.0.0",
     "@eslint-kit/eslint-config-prettier": "^2.0.0",
-    "@eslint-kit/eslint-config-typescript": "^3.1.2",
+    "@eslint-kit/eslint-config-typescript": "^3.2.0",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.5",
     "@typescript-eslint/parser": "^4.4.1",
+    "babel-jest": "^26.6.3",
+    "babel-plugin-tester": "^10.0.0",
+    "change-case": "^4.1.2",
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",
     "effector": "^21.8.3",
-    "eslint": "^7.11.0",
+    "eslint": "7.10.0",
     "forest": "^0.19.6",
     "husky": "^4.2.5",
     "jest": "^26.0.1",
@@ -64,6 +69,7 @@
     "sharec-sova-config": "^0.1.0",
     "terser-webpack-plugin": "^3.0.2",
     "ts-loader": "^7.0.5",
+    "ts-node": "^9.1.1",
     "typescript": "^4.1.5",
     "typescript-styled-plugin": "^0.15.0",
     "webpack": "^4.43.0",
@@ -74,10 +80,17 @@
     "version": "0.1.1"
   },
   "dependencies": {
+    "autoprefixer": "^10.2.4",
+    "csso": "^4.2.0",
+    "postcss": "^8.2.6",
+    "postcss-nested": "^5.0.3",
     "stylis": "^4.0.0"
   },
   "peerDependencies": {
     "effector": "^21.8.3",
     "forest": "^0.19.6"
+  },
+  "browserslist": {
+    "development": ["last 1 ie version", "last 5 chrome version"]
   }
 }

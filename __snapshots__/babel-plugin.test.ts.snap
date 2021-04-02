@@ -1,0 +1,689 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`foliage assertsDoNotConflictsWithExistsDeclarations: assertsDoNotConflictsWithExistsDeclarations 1`] = `
+
+import { css, keyframes } from 'foliage'
+
+function _assertKeyframe() {}
+const _assertVariable = 1;
+const _assertSelector = () => {};
+
+const size = '--demo-size';
+const speed = '--demo-anim-speed';
+
+const anim = keyframes\`
+  from { opacity: 0 };
+  to: { opacity: 1 };
+\`;
+
+const first = css\`
+  color: black;
+  font-size: var(\${size});
+  animation: var(\${speed}) infinite linear \${anim};
+\`;
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import {
+  css,
+  keyframes,
+  assertVariable as _assertVariable2,
+  assertKeyframe as _assertKeyframe2,
+} from 'foliage';
+
+function _assertKeyframe() {}
+
+const _assertVariable = 1;
+
+const _assertSelector = () => {};
+
+const size = '--demo-size';
+const speed = '--demo-anim-speed';
+const anim = {
+  content:
+    '@-webkit-keyframes f-vtnygm-anim{0%{opacity:0}}@keyframes f-vtnygm-anim{0%{opacity:0}}',
+  keyframes: 'f-vtnygm-anim',
+};
+const first = {
+  content: \`.f-kiqxyz-first{color:#000;font-size:var(\${_assertVariable2(
+    size,
+  )});-webkit-animation:var(\${_assertVariable2(
+    speed,
+  )}) infinite linear \${_assertVariable2(
+    speed,
+  )};animation:var(\${_assertKeyframe2(
+    anim,
+  )}) infinite linear \${_assertKeyframe2(anim)}}\`,
+  css: 'f-kiqxyz-first',
+};
+
+
+`;
+
+exports[`foliage combination: combination 1`] = `
+
+import { css } from 'foliage'
+import * as f from 'foliage'
+
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  }
+}
+
+const first = css\`
+  display: block;
+  \${theme.size.normal}: 12px;
+\`
+
+const pulse = f.keyframes\`
+  0% { opacity: 1 }
+  50% { opacity: 0.2 }
+  100% { opacity: 1 }
+\`
+
+const second = f.css\`
+  font-size: var(\${theme.size.normal});
+  animation: 1s ease-in-out infinite \${pulse};
+
+  \${first} & {
+    display: flex;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, assertVariable as _assertVariable } from 'foliage';
+import * as f from 'foliage';
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  },
+};
+const first = {
+  content: \`.f-mvz1xy-first{display:block;\${_assertVariable(
+    theme.size.normal,
+  )}:12px}\`,
+  css: 'f-mvz1xy-first',
+};
+const pulse = {
+  content:
+    '@-webkit-keyframes f-o40sxw-pulse{0%,to{opacity:1}50%{opacity:.2}}@keyframes f-o40sxw-pulse{0%,to{opacity:1}50%{opacity:.2}}',
+  keyframes: 'f-o40sxw-pulse',
+};
+const second = {
+  content: \`.fc3a8th-second{font-size:var(\${f.assertVariable(
+    theme.size.normal,
+  )});-webkit-animation:1s ease-in-out infinite \${f.assertKeyframe(
+    pulse,
+  )};animation:1s ease-in-out infinite \${f.assertKeyframe(
+    pulse,
+  )}}\${f.assertSelector(first)} .fc3a8th-second{display:flex}\`,
+  css: 'fc3a8th-second',
+};
+
+
+`;
+
+exports[`foliage componentWithVariantsDeclaration: componentWithVariantsDeclaration 1`] = `
+
+import { css, component } from 'foliage-react';
+
+const size = '--ui-size';
+
+const chip = css\`
+  color: white;
+  background-color: black;
+  border-radius: 4px;
+  padding: var(\${size});
+\`
+
+export const Chip = component('div', [chip], {
+  defaults: { size: 'normal' },
+  variants: {
+    size: {
+      small: css\` \${size}: 6px; \`,
+      normal: css\` \${size}: 8px; \`,
+      large: css\` \${size}: 12px; \`,
+    }
+  }
+})
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import {
+  css,
+  component,
+  assertVariable as _assertVariable,
+} from 'foliage-react';
+const size = '--ui-size';
+const chip = {
+  content: \`.f-d0u6l1-chip{color:#fff;background-color:#000;border-radius:4px;padding:var(\${_assertVariable(
+    size,
+  )})}\`,
+  css: 'f-d0u6l1-chip',
+};
+export const Chip = component('div', [chip], {
+  defaults: {
+    size: 'normal',
+  },
+  variants: {
+    size: {
+      small: {
+        content: \`.f-h2aov8-Chip-variants-size-small{\${_assertVariable(
+          size,
+        )}:6px}\`,
+        css: 'f-h2aov8-Chip-variants-size-small',
+      },
+      normal: {
+        content: \`.fz7zr1a-Chip-variants-size-normal{\${_assertVariable(
+          size,
+        )}:8px}\`,
+        css: 'fz7zr1a-Chip-variants-size-normal',
+      },
+      large: {
+        content: \`.f-osz4ka-Chip-variants-size-large{\${_assertVariable(
+          size,
+        )}:12px}\`,
+        css: 'f-osz4ka-Chip-variants-size-large',
+      },
+    },
+  },
+});
+
+
+`;
+
+exports[`foliage cssImportedFromPackage: cssImportedFromPackage 1`] = `
+
+import {css} from 'foliage'; const example = css\`color: black\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from 'foliage';
+const example = {
+  content: '.f1lijm6-example{color:#000}',
+  css: 'f1lijm6-example',
+};
+
+
+`;
+
+exports[`foliage cssImportedFromReact: cssImportedFromReact 1`] = `
+
+import {css} from 'foliage-react'; const demo = css\`.global & { [data-demo="a"] {color: black} }\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from 'foliage-react';
+const demo = {
+  content: '.global .f-se2al8-demo [data-demo=a]{color:#000}',
+  css: 'f-se2al8-demo',
+};
+
+
+`;
+
+exports[`foliage cssInterpolationInCss: cssInterpolationInCss 1`] = `
+
+import { css } from 'foliage';
+const first = css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`
+const second = css\`
+  color: red;
+  & \${first} {
+    color: white;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, assertSelector as _assertSelector } from 'foliage';
+const first = {
+  content: '.f-gdcl67-first{color:#000}.f-gdcl67-first>*{padding-left:1rem}',
+  css: 'f-gdcl67-first',
+};
+const second = {
+  content: \`.f-if491s-second{color:red}.f-if491s-second \${_assertSelector(
+    first,
+  )}{color:#fff}\`,
+  css: 'f-if491s-second',
+};
+
+
+`;
+
+exports[`foliage cssRenamedFromPackage: cssRenamedFromPackage 1`] = `
+
+import {css as demo} from 'foliage'; const example = demo\`justify-content: center;\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css as demo } from 'foliage';
+const example = {
+  content: '.f1likb5-example{justify-content:center}',
+  css: 'f1likb5-example',
+};
+
+
+`;
+
+exports[`foliage deepNestingDeterminesName: deepNestingDeterminesName 1`] = `
+
+import { css } from 'foliage';
+const first = {
+  second: {
+    third: css\` color: black \`,
+    fifth: {
+      sixth: css\`color:white;\`
+    },
+  },
+  fourth: css\`color:red\`
+}
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from 'foliage';
+const first = {
+  second: {
+    third: {
+      content: '.fq8i00d-first-second-third{color:#000}',
+      css: 'fq8i00d-first-second-third',
+    },
+    fifth: {
+      sixth: {
+        content: '.f5yqwwy-first-second-fifth-sixth{color:#fff}',
+        css: 'f5yqwwy-first-second-fifth-sixth',
+      },
+    },
+  },
+  fourth: {
+    content: '.fuv4pzp-first-fourth{color:red}',
+    css: 'fuv4pzp-first-fourth',
+  },
+};
+
+
+`;
+
+exports[`foliage doNotCompilesThirdParty: doNotCompilesThirdParty 1`] = `
+
+import { css, keyframes, createGlobalStyle } from 'styled-components';
+const part = css\`color:black;\`
+const anim = keyframes\`from{color: black;} to {color: white;}\`
+const glob = createGlobalStyle\`body{display: grid}\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, keyframes, createGlobalStyle } from 'styled-components';
+const part = css\`
+  color: black;
+\`;
+const anim = keyframes\`from{color: black;} to {color: white;}\`;
+const glob = createGlobalStyle\`body{display: grid}\`;
+
+
+`;
+
+exports[`foliage fullInterpolationExample: fullInterpolationExample 1`] = `
+
+import { css, keyframes } from 'foliage';
+
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  }
+}
+
+const first = css\`
+  display: block;
+\`
+
+const pulse = keyframes\`
+  0% { opacity: 1 }
+  50% { opacity: 0.2 }
+  100% { opacity: 1 }
+\`
+
+const second = css\`
+  font-size: var(\${theme.size.normal});
+  animation: 1s ease-in-out infinite \${pulse};
+
+  \${first} & {
+    display: flex;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import {
+  css,
+  keyframes,
+  assertVariable as _assertVariable,
+  assertKeyframe as _assertKeyframe,
+  assertSelector as _assertSelector,
+} from 'foliage';
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  },
+};
+const first = {
+  content: '.f-d218eu-first{display:block}',
+  css: 'f-d218eu-first',
+};
+const pulse = {
+  content:
+    '@-webkit-keyframes f-p241qa-pulse{0%,to{opacity:1}50%{opacity:.2}}@keyframes f-p241qa-pulse{0%,to{opacity:1}50%{opacity:.2}}',
+  keyframes: 'f-p241qa-pulse',
+};
+const second = {
+  content: \`.f178xr0-second{font-size:var(\${_assertVariable(
+    theme.size.normal,
+  )});-webkit-animation:1s ease-in-out infinite \${_assertKeyframe(
+    pulse,
+  )};animation:1s ease-in-out infinite \${_assertKeyframe(
+    pulse,
+  )}}\${_assertSelector(first)} .f178xr0-second{display:flex}\`,
+  css: 'f178xr0-second',
+};
+
+
+`;
+
+exports[`foliage interpolationWithNamespace: interpolationWithNamespace 1`] = `
+
+import * as foli from 'foliage';
+
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  }
+}
+
+const first = foli.css\`
+  display: block;
+\`
+
+const pulse = foli.keyframes\`
+  0% { opacity: 1 }
+  50% { opacity: 0.2 }
+  100% { opacity: 1 }
+\`
+
+const second = foli.css\`
+  font-size: var(\${theme.size.normal});
+  animation: 1s ease-in-out infinite \${pulse};
+
+  \${first} & {
+    display: flex;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import * as foli from 'foliage';
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  },
+};
+const first = {
+  content: '.f-d218eu-first{display:block}',
+  css: 'f-d218eu-first',
+};
+const pulse = {
+  content:
+    '@-webkit-keyframes f-p241qa-pulse{0%,to{opacity:1}50%{opacity:.2}}@keyframes f-p241qa-pulse{0%,to{opacity:1}50%{opacity:.2}}',
+  keyframes: 'f-p241qa-pulse',
+};
+const second = {
+  content: \`.f178xr0-second{font-size:var(\${foli.assertVariable(
+    theme.size.normal,
+  )});-webkit-animation:1s ease-in-out infinite \${foli.assertKeyframe(
+    pulse,
+  )};animation:1s ease-in-out infinite \${foli.assertKeyframe(
+    pulse,
+  )}}\${foli.assertSelector(first)} .f178xr0-second{display:flex}\`,
+  css: 'f178xr0-second',
+};
+
+
+`;
+
+exports[`foliage keyframesAndGlobalStylesShouldCompile: keyframesAndGlobalStylesShouldCompile 1`] = `
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`
+
+const anim = keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`
+
+const glob = createGlobalStyle\`
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = {
+  content: '.f-u8us0b-part{color:#000}.f-u8us0b-part>*{padding-left:1rem}',
+  css: 'f-u8us0b-part',
+};
+const anim = {
+  content:
+    '@-webkit-keyframes f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'f41ecfi-anim',
+};
+const glob = {
+  content: 'body{position:fixed;top:0;left:0}',
+  createGlobalStyle: 'f-spiibj-glob',
+};
+
+
+`;
+
+exports[`foliage keyframesInterpolationInCss: keyframesInterpolationInCss 1`] = `
+
+import { css, keyframes } from 'foliage';
+
+const anim = keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`
+
+const element = css\`
+  color: red;
+  animation: 3s ease-in 1s infinite \${anim};
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, keyframes, assertKeyframe as _assertKeyframe } from 'foliage';
+const anim = {
+  content:
+    '@-webkit-keyframes f257uuq-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes f257uuq-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'f257uuq-anim',
+};
+const element = {
+  content: \`.f7qew45-element{color:red;-webkit-animation:3s ease-in 1s infinite \${_assertKeyframe(
+    anim,
+  )};animation:3s ease-in 1s infinite \${_assertKeyframe(anim)}}\`,
+  css: 'f7qew45-element',
+};
+
+
+`;
+
+exports[`foliage namespaceSupport: namespaceSupport 1`] = `
+
+import * as example from 'foliage';
+const part = example.css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`
+
+const anim = example.keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`
+
+const glob = example.createGlobalStyle\`
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+\`
+
+const theme = example.vars\`
+  --demo: 123px;
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import * as example from 'foliage';
+const part = {
+  content: '.f-u8us0b-part{color:#000}.f-u8us0b-part>*{padding-left:1rem}',
+  css: 'f-u8us0b-part',
+};
+const anim = {
+  content:
+    '@-webkit-keyframes f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'f41ecfi-anim',
+};
+const glob = {
+  content: 'body{position:fixed;top:0;left:0}',
+  createGlobalStyle: 'f-spiibj-glob',
+};
+const theme = example.vars\`
+  --demo: 123px;
+\`;
+
+
+`;
+
+exports[`foliage prefixAdd: prefixAdd 1`] = `
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`
+
+const anim = keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`
+
+const glob = createGlobalStyle\`
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = {
+  content:
+    '.prefix-f-u8us0b-part{color:#000}.prefix-f-u8us0b-part>*{padding-left:1rem}',
+  css: 'prefix-f-u8us0b-part',
+};
+const anim = {
+  content:
+    '@-webkit-keyframes prefix-f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes prefix-f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'prefix-f41ecfi-anim',
+};
+const glob = {
+  content: 'body{position:fixed;top:0;left:0}',
+  createGlobalStyle: 'prefix-f-spiibj-glob',
+};
+
+
+`;
+
+exports[`foliage prefixExistsWithoutDebug: prefixExistsWithoutDebug 1`] = `
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = css\`
+  color: black;
+  & > * { padding-left: 1rem; }
+\`
+
+const anim = keyframes\`
+  0% { transform: rotate(0deg) }
+  100% { transform: rotate(180deg) }
+\`
+
+const glob = createGlobalStyle\`
+  body {
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, keyframes, createGlobalStyle } from 'foliage';
+const part = {
+  content: '.prefix-f-u8us0b{color:#000}.prefix-f-u8us0b>*{padding-left:1rem}',
+  css: 'prefix-f-u8us0b',
+};
+const anim = {
+  content:
+    '@-webkit-keyframes prefix-f41ecfi{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes prefix-f41ecfi{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'prefix-f41ecfi',
+};
+const glob = {
+  content: 'body{position:fixed;top:0;left:0}',
+  createGlobalStyle: 'prefix-f-spiibj',
+};
+
+
+`;
+
+exports[`foliage varsNotCompiles: varsNotCompiles 1`] = `
+
+import {vars, css} from 'foliage'; const a = css\`outline: none;\`; const b = vars\`--random: 1px;\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { vars, css } from 'foliage';
+const a = {
+  content: '.f-3x0vwb-a{outline:0}',
+  css: 'f-3x0vwb-a',
+};
+const b = vars\`--random: 1px;\`;
+
+
+`;
+
+exports[`foliage withoutDebugNamesNotAdded: withoutDebugNamesNotAdded 1`] = `
+
+import {css} from 'foliage'; const example = css\`span{display:grid}\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from 'foliage';
+const example = {
+  content: '.f1lijm6 span{display:grid}',
+  css: 'f1lijm6',
+};
+
+
+`;
