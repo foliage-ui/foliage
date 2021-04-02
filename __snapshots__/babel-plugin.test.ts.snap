@@ -52,7 +52,9 @@ const first = {
   css: 'yuc9wf-first',
 };
 const second = {
-  content: \`.a8hqie-second{color:red}.a8hqie-second \${first}{color:#fff}\`,
+  content: \`.a8hqie-second{color:red}.a8hqie-second \${assertSelector(
+    first,
+  )}{color:#fff}\`,
   css: 'a8hqie-second',
 };
 
@@ -140,7 +142,13 @@ const pulse = {
   keyframes: 'qgp328-pulse',
 };
 const second = {
-  content: \`.icc4e8-second{font-size:var(\${theme.size.normal});-webkit-animation:1s ease-in-out infinite \${pulse};animation:1s ease-in-out infinite \${pulse}}\${first} .icc4e8-second{display:flex}\`,
+  content: \`.icc4e8-second{font-size:var(\${assertVariable(
+    theme.size.normal,
+  )});-webkit-animation:1s ease-in-out infinite \${assertKeyframe(
+    pulse,
+  )};animation:1s ease-in-out infinite \${assertKeyframe(
+    pulse,
+  )}}\${assertSelector(first)} .icc4e8-second{display:flex}\`,
   css: 'icc4e8-second',
 };
 
@@ -211,7 +219,9 @@ const anim = {
   keyframes: 'utri3i-anim',
 };
 const element = {
-  content: \`.-na48dc-element{color:red;-webkit-animation:3s ease-in 1s infinite \${anim};animation:3s ease-in 1s infinite \${anim}}\`,
+  content: \`.-na48dc-element{color:red;-webkit-animation:3s ease-in 1s infinite \${assertKeyframe(
+    anim,
+  )};animation:3s ease-in 1s infinite \${assertKeyframe(anim)}}\`,
   css: '-na48dc-element',
 };
 

@@ -21,10 +21,77 @@ module.exports = function (babel, options = {}) {
 
   const compiler = postcss([autoprefixer(), nested()]);
 
+  const markerRegexp = new RegExp(interpolationMark('\\d+'), 'gm');
+  const varMarkerRegexp = new RegExp(
+    `var\\(\\s*${interpolationMark('\\d+')}`,
+    'gm',
+  );
+
   function compile(source, file = 'source.css') {
-    const result = compiler.process(source, { from: file });
+    const ast = postcss.parse(source);
+    const derivedInterpolations = {};
+    function addInterpolation(list, type) {
+      list.forEach((name) => {
+        if (!derivedInterpolations[name]) derivedInterpolations[name] = type;
+      });
+    }
+
+    ast.walk((node) => {
+      switch (node.type) {
+        // Detect if interpolation found in selector
+        case 'rule': {
+          const found = node.selector.match(markerRegexp);
+          if (found) addInterpolation(found, 'selector');
+          break;
+        }
+
+        // Detect when interpolation is used inside css properties or values
+        case 'decl': {
+          // Interpolation found in property declaration
+          // Maybe it is custom property declaration
+          const foundProp = node.prop.match(markerRegexp);
+          if (foundProp) addInterpolation(foundProp, 'custom-property'); // user wants to set custom property value
+
+          // When interpolation is used inside var(), we need not to match it below
+          // Here we need to remove entire interpolation from content to mark, that it is already processed
+          let content = node.value;
+          const foundVars = content.match(varMarkerRegexp);
+          if (foundVars) {
+            // Found var() with interpolation
+            foundVars.forEach((cssVar) => {
+              // We need to find actual interpolation name to mark it as var
+              const name = cssVar.match(markerRegexp);
+              if (name) addInterpolation(name, 'var');
+              // Remove `var(interpolation` from processing content, to mark it as already processed
+              content = content.replace(cssVar, '');
+            });
+          }
+
+          // Search for another interpolations
+          const foundValues = content.match(markerRegexp);
+          if (foundValues) {
+            // If interpolation is used for animation, we know that it is a keyframe block
+            if (node.prop === 'animation') {
+              addInterpolation(foundValues, 'keyframe');
+            } else {
+              // Another types of interpolation is not supported yet
+              addInterpolation(foundValues, 'INVALID');
+            }
+          }
+
+          break;
+        }
+
+        default: /* noop */
+      }
+    });
+
+    const result = compiler.process(ast, { from: file });
     const compiled = result.css;
-    return csso.minify(compiled).css;
+    return {
+      css: csso.minify(compiled).css,
+      interpolations: derivedInterpolations,
+    };
   }
 
   return {
@@ -60,8 +127,8 @@ module.exports = function (babel, options = {}) {
             if (path.node.quasi.quasis.length === 1) {
               const source = path.node.quasi.quasis[0].value.raw;
               const wrapped = createContainer(source, methodName, fullName);
-              const output = compile(wrapped);
-              content = t.stringLiteral(output);
+              const { css } = compile(wrapped);
+              content = t.stringLiteral(css);
             } else {
               const { quasis, expressions } = path.node.quasi;
               const draftCssSource = [quasis[0].value.cooked];
@@ -71,9 +138,10 @@ module.exports = function (babel, options = {}) {
               });
               const source = draftCssSource.join(' ');
               const wrapped = createContainer(source, methodName, fullName);
-              const output = compile(wrapped);
+              const { css, interpolations: interpType } = compile(wrapped);
+              console.log(interpType);
 
-              let chunks = [output];
+              let chunks = [css];
               const interpolations = [];
 
               expressions.forEach((node, index) => {
@@ -86,8 +154,14 @@ module.exports = function (babel, options = {}) {
                     chunk.split(marker).forEach((part, index, list) => {
                       const last = index === list.length - 1;
                       result.push(part);
+
+                      const wrappedNode = createWrapperForInterpolation(
+                        t,
+                        interpType[marker],
+                        node,
+                      );
                       // Add expression only after not last
-                      if (!last) interpolations.push(node);
+                      if (!last) interpolations.push(wrappedNode);
                     });
                   } else {
                     result.push(chunk);
@@ -115,88 +189,56 @@ module.exports = function (babel, options = {}) {
             );
           }
         });
-
-        // if (
-        //   t.isMemberExpression(path.node.tag) &&
-        //   t.isIdentifier(path.node.tag.object) &&
-        //   t.isIdentifier(path.node.tag.property)
-        // ) {
-        //   // Check that tag.object is a `* as import from 'foliage'`
-        //   // And property is supported method for compilation
-        //   const objectName = path.node.tag.object.name;
-        //   const methodName = path.node.tag.property.name;
-        //   const binding = path.scope.getOwnBinding(objectName);
-        //   if (binding) {
-        //     const resolved = resolveNamespaceImport(t, binding);
-        //     if (resolved) {
-        //       const { specifier, module } = resolved;
-
-        //       if (
-        //         allowedModules.includes(module.node.source.value) &&
-        //         allowedMethods.includes(methodName)
-        //       ) {
-        //         console.log('BANG!');
-        //       }
-        //     }
-        //   }
-        // }
-        // // Find original import for current template tag
-        // const tagName = path.node.tag.name;
-        // const binding = path.scope.getOwnBinding(tagName);
-        // if (binding) {
-        //   const resolved = resolveSpecifierImport(t, binding);
-        //   if (resolved) {
-        //     const { module, methodName } = resolved;
-        //     // Check that template tag imported from supported module
-        //     // And method from module should be compiled
-        //     if (
-        //       allowedModules.includes(module.node.source.value) &&
-        //       allowedMethods.includes(methodName)
-        //     ) {
-        //       // Create stable unique id with readable name
-        //       const derivedName = determineName(t, path);
-        //       const sid = generateStableID(
-        //         '',
-        //         '',
-        //         derivedName,
-        //         path.node.loc.start.line,
-        //         path.node.loc.start.column,
-        //       );
-        //       const fullName = nameCreate(sid, derivedName);
-
-        //       //path.scope.rename(name);
-
-        //       let output = '/*INTERPOLATION IS NOT SUPPORTED YET*/';
-
-        //       // Process only tagged literals without interpolations
-        //       if (path.node.quasi.quasis.length === 1) {
-        //         const source = path.node.quasi.quasis[0].value.raw;
-        //         const withClass = createContainer(source, methodName, fullName);
-        //         output = compile(withClass);
-        //       }
-
-        //       path.replaceWith(
-        //         t.objectExpression([
-        //           t.objectProperty(
-        //             t.identifier('content'),
-        //             t.stringLiteral(output),
-        //           ),
-        //           t.objectProperty(
-        //             t.identifier(methodName),
-        //             t.stringLiteral(fullName),
-        //           ),
-        //         ]),
-        //       );
-        //       // console.log(Object.keys(path.__proto__).sort())
-        //     }
-        //   }
-        // }
       },
     },
   };
 };
 
-const interpolationMark = (index) => `__foliageInterpolationIndex${index}`;
+const interpolationMark = (index) => `foliageInterpolationIndex${index}`;
+
+function addImport(t, path, specifier, importPath) {
+  const programPath = path.find((path) => path.isProgram());
+  // const renamed = '1' || programPath.scope.generateUidIdentifier(specifier);
+  const [newPath] = programPath.unshiftContainer(
+    'body',
+    t.importDeclaration(
+      [t.importSpecifier(t.identifier(specifier), t.identifier(specifier))],
+      t.stringLiteral(importPath),
+    ),
+  );
+
+  newPath.get('specifiers').forEach((s) => {
+    programPath.scope.registerBinding('module', s);
+  });
+
+  return specifier;
+}
+
+function createWrapperForInterpolation(t, type, node) {
+  switch (type) {
+    case 'selector': {
+      return t.callExpression(t.identifier('assertSelector'), [node]);
+    }
+
+    case 'var':
+    case 'custom-property': {
+      return t.callExpression(t.identifier('assertVariable'), [node]);
+    }
+
+    case 'keyframe': {
+      return t.callExpression(t.identifier('assertKeyframe'), [node]);
+    }
+
+    case 'INVALID': {
+      return t.callExpression(t.identifier('assertInvalid'), [node]);
+    }
+
+    default:
+      throw new TypeError(
+        `Invalid interpolation type "${type}". Please, report an issue at https://github.com/effector/foliage/issues`,
+      );
+  }
+}
 
 function createContainer(source, type, fullName) {
   if (type === 'css') {
