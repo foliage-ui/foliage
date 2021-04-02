@@ -1,5 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`foliage assertsDoNotConflictsWithExistsDeclarations: assertsDoNotConflictsWithExistsDeclarations 1`] = `
+
+import { css, keyframes } from 'foliage'
+
+function _assertKeyframe() {}
+const _assertVariable = 1;
+const _assertSelector = () => {};
+
+const size = '--demo-size';
+const speed = '--demo-anim-speed';
+
+const anim = keyframes\`
+  from { opacity: 0 };
+  to: { opacity: 1 };
+\`;
+
+const first = css\`
+  color: black;
+  font-size: var(\${size});
+  animation: var(\${speed}) infinite linear \${anim};
+\`;
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import {
+  css,
+  keyframes,
+  assertVariable as _assertVariable2,
+  assertKeyframe as _assertKeyframe2,
+} from 'foliage';
+
+function _assertKeyframe() {}
+
+const _assertVariable = 1;
+
+const _assertSelector = () => {};
+
+const size = '--demo-size';
+const speed = '--demo-anim-speed';
+const anim = {
+  content:
+    '@-webkit-keyframes f-vtnygm-anim{0%{opacity:0}}@keyframes f-vtnygm-anim{0%{opacity:0}}',
+  keyframes: 'f-vtnygm-anim',
+};
+const first = {
+  content: \`.f-kiqxyz-first{color:#000;font-size:var(\${_assertVariable2(
+    size,
+  )});-webkit-animation:var(\${_assertVariable2(
+    speed,
+  )}) infinite linear \${_assertVariable2(
+    speed,
+  )};animation:var(\${_assertKeyframe2(
+    anim,
+  )}) infinite linear \${_assertKeyframe2(anim)}}\`,
+  css: 'f-kiqxyz-first',
+};
+
+
+`;
+
 exports[`foliage cssImportedFromPackage: cssImportedFromPackage 1`] = `
 
 import {css} from 'foliage'; const example = css\`color: black\`

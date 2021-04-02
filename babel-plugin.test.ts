@@ -111,6 +111,28 @@ const second = css\`
 \`
 `;
 
+const assertsDoNotConflictsWithExistsDeclarations = `
+import { css, keyframes } from 'foliage'
+
+function _assertKeyframe() {}
+const _assertVariable = 1;
+const _assertSelector = () => {};
+
+const size = '--demo-size';
+const speed = '--demo-anim-speed';
+
+const anim = keyframes\`
+  from { opacity: 0 };
+  to: { opacity: 1 };
+\`;
+
+const first = css\`
+  color: black;
+  font-size: var(\${size});
+  animation: var(\${speed}) infinite linear \${anim};
+\`;
+`;
+
 pluginTester({
   pluginName: 'foliage',
   plugin,
@@ -142,5 +164,6 @@ pluginTester({
       pluginOptions: { prefix: 'prefix', debug: false },
     },
     fullInterpolationExample: interpolation,
+    assertsDoNotConflictsWithExistsDeclarations,
   },
 });
