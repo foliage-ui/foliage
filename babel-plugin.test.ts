@@ -111,6 +111,35 @@ const second = css\`
 \`
 `;
 
+const interpolationWithNamespace = `
+import * as foli from 'foliage';
+
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  }
+}
+
+const first = foli.css\`
+  display: block;
+\`
+
+const pulse = foli.keyframes\`
+  0% { opacity: 1 }
+  50% { opacity: 0.2 }
+  100% { opacity: 1 }
+\`
+
+const second = foli.css\`
+  font-size: var(\${theme.size.normal});
+  animation: 1s ease-in-out infinite \${pulse};
+
+  \${first} & {
+    display: flex;
+  }
+\`
+`;
+
 const assertsDoNotConflictsWithExistsDeclarations = `
 import { css, keyframes } from 'foliage'
 
@@ -191,6 +220,7 @@ pluginTester({
     namespaceSupport,
     doNotCompilesThirdParty,
     cssInterpolationInCss,
+    interpolationWithNamespace,
     keyframesInterpolationInCss,
     prefixAdd: {
       code: fullExample,

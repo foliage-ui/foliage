@@ -328,6 +328,66 @@ const second = {
 
 `;
 
+exports[`foliage interpolationWithNamespace: interpolationWithNamespace 1`] = `
+
+import * as foli from 'foliage';
+
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  }
+}
+
+const first = foli.css\`
+  display: block;
+\`
+
+const pulse = foli.keyframes\`
+  0% { opacity: 1 }
+  50% { opacity: 0.2 }
+  100% { opacity: 1 }
+\`
+
+const second = foli.css\`
+  font-size: var(\${theme.size.normal});
+  animation: 1s ease-in-out infinite \${pulse};
+
+  \${first} & {
+    display: flex;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import * as foli from 'foliage';
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  },
+};
+const first = {
+  content: '.f-d218eu-first{display:block}',
+  css: 'f-d218eu-first',
+};
+const pulse = {
+  content:
+    '@-webkit-keyframes f-p241qa-pulse{0%,to{opacity:1}50%{opacity:.2}}@keyframes f-p241qa-pulse{0%,to{opacity:1}50%{opacity:.2}}',
+  keyframes: 'f-p241qa-pulse',
+};
+const second = {
+  content: \`.f178xr0-second{font-size:var(\${foli.assertVariable(
+    theme.size.normal,
+  )});-webkit-animation:1s ease-in-out infinite \${foli.assertKeyframe(
+    pulse,
+  )};animation:1s ease-in-out infinite \${foli.assertKeyframe(
+    pulse,
+  )}}\${foli.assertSelector(first)} .f178xr0-second{display:flex}\`,
+  css: 'f178xr0-second',
+};
+
+
+`;
+
 exports[`foliage keyframesAndGlobalStylesShouldCompile: keyframesAndGlobalStylesShouldCompile 1`] = `
 
 import { css, keyframes, createGlobalStyle } from 'foliage';

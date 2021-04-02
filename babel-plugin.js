@@ -121,123 +121,115 @@ module.exports = function (babel, options = {}) {
       //},
 
       TaggedTemplateExpression(path, state) {
-        resolveAllowedMethod(t, path, ({ methodName, moduleName, module }) => {
-          // Check that template tag imported from allowed module
-          // And method supports for compilation
-          if (
-            allowedModules.includes(moduleName) &&
-            allowedMethods.includes(methodName)
-          ) {
-            // Create stable unique id with readable name
-            const derivedName = determineName(t, path);
-            const sid = generateStableID(
-              state.file.opts.root,
-              state.filename,
-              derivedName,
-              path.node.loc.start.line,
-              path.node.loc.start.column,
-            );
-            const fullName = nameCreate(sid, derivedName);
+        resolveAllowedMethod(
+          t,
+          path,
+          ({ methodName, moduleName, module, namespace }) => {
+            // Check that template tag imported from allowed module
+            // And method supports for compilation
+            if (
+              allowedModules.includes(moduleName) &&
+              allowedMethods.includes(methodName)
+            ) {
+              // Create stable unique id with readable name
+              const derivedName = determineName(t, path);
+              const sid = generateStableID(
+                state.file.opts.root,
+                state.filename,
+                derivedName,
+                path.node.loc.start.line,
+                path.node.loc.start.column,
+              );
+              const fullName = nameCreate(sid, derivedName);
 
-            let content = null;
+              let content = null;
 
-            // Process only tagged literals without interpolations
-            if (path.node.quasi.quasis.length === 1) {
-              const source = path.node.quasi.quasis[0].value.raw;
-              const wrapped = createContainer(source, methodName, fullName);
-              const { css } = compile(wrapped);
-              content = t.stringLiteral(css);
-            } else {
-              const { quasis, expressions } = path.node.quasi;
-              const draftCssSource = [quasis[0].value.cooked];
-              expressions.forEach((node, index) => {
-                draftCssSource.push(interpolationMark(index));
-                draftCssSource.push(quasis[index + 1].value.cooked);
-              });
-              const source = draftCssSource.join(' ');
-              const wrapped = createContainer(source, methodName, fullName);
-              const { css, interpolations: interpType } = compile(wrapped);
-
-              let chunks = [css];
-              const interpolations = [];
-
-              expressions.forEach((node, index) => {
-                const marker = interpolationMark(index);
-                const result = [];
-                // iterate over each quasis
-                chunks.forEach((chunk) => {
-                  // if quasis has interpolation, split it to few parts
-                  if (chunk.includes(marker)) {
-                    chunk.split(marker).forEach((part, index, list) => {
-                      const last = index === list.length - 1;
-                      result.push(part);
-
-                      const interpolationType = interpType[marker];
-
-                      // Add import of assert method
-                      const importSpecifier = wrapperMethod[interpolationType];
-
-                      const speci = addSpecifier(t, module, importSpecifier);
-
-                      const wrappedNode = createWrapperForInterpolation(
-                        t,
-                        interpolationType,
-                        speci,
-                        node,
-                      );
-                      // Add expression only after not last
-                      if (!last) interpolations.push(wrappedNode);
-                    });
-                  } else {
-                    result.push(chunk);
-                  }
+              // Process only tagged literals without interpolations
+              if (path.node.quasi.quasis.length === 1) {
+                const source = path.node.quasi.quasis[0].value.raw;
+                const wrapped = createContainer(source, methodName, fullName);
+                const { css } = compile(wrapped);
+                content = t.stringLiteral(css);
+              } else {
+                const { quasis, expressions } = path.node.quasi;
+                const draftCssSource = [quasis[0].value.cooked];
+                expressions.forEach((node, index) => {
+                  draftCssSource.push(interpolationMark(index));
+                  draftCssSource.push(quasis[index + 1].value.cooked);
                 });
-                chunks = result;
-              });
+                const source = draftCssSource.join(' ');
+                const wrapped = createContainer(source, methodName, fullName);
+                const { css, interpolations: interpType } = compile(wrapped);
 
-              content = t.templateLiteral(
-                chunks.map((item, index, list) =>
-                  t.templateElement({ raw: item }, index === list.length - 1),
-                ),
-                interpolations,
+                let chunks = [css];
+                const interpolations = [];
+
+                expressions.forEach((node, index) => {
+                  const marker = interpolationMark(index);
+                  const result = [];
+                  // iterate over each quasis
+                  chunks.forEach((chunk) => {
+                    // if quasis has interpolation, split it to few parts
+                    if (chunk.includes(marker)) {
+                      chunk.split(marker).forEach((part, index, list) => {
+                        const last = index === list.length - 1;
+                        result.push(part);
+
+                        const interpolationType = interpType[marker];
+
+                        // Add import of assert method
+                        const importSpecifier =
+                          wrapperMethod[interpolationType];
+
+                        const wrappedNode = namespace
+                          ? createNamespaceWrapper(
+                              t,
+                              namespace,
+                              importSpecifier,
+                              node,
+                            )
+                          : createWrapperForInterpolation(
+                              t,
+                              interpolationType,
+                              addSpecifier(t, module, importSpecifier),
+                              node,
+                            );
+                        // Add expression only after not last
+                        if (!last) interpolations.push(wrappedNode);
+                      });
+                    } else {
+                      result.push(chunk);
+                    }
+                  });
+                  chunks = result;
+                });
+
+                content = t.templateLiteral(
+                  chunks.map((item, index, list) =>
+                    t.templateElement({ raw: item }, index === list.length - 1),
+                  ),
+                  interpolations,
+                );
+              }
+
+              path.replaceWith(
+                t.objectExpression([
+                  t.objectProperty(t.identifier('content'), content),
+                  t.objectProperty(
+                    t.identifier(methodName),
+                    t.stringLiteral(fullName),
+                  ),
+                ]),
               );
             }
-
-            path.replaceWith(
-              t.objectExpression([
-                t.objectProperty(t.identifier('content'), content),
-                t.objectProperty(
-                  t.identifier(methodName),
-                  t.stringLiteral(fullName),
-                ),
-              ]),
-            );
-          }
-        });
+          },
+        );
       },
     },
   };
 };
 
 const interpolationMark = (index) => `foliageInterpolationIndex${index}`;
-
-function addImport(t, path, specifier, importPath) {
-  const programPath = path.find((path) => path.isProgram());
-  // const renamed = '1' || programPath.scope.generateUidIdentifier(specifier);
-  const [newPath] = programPath.unshiftContainer(
-    'body',
-    t.importDeclaration(
-      [t.importSpecifier(t.identifier(specifier), t.identifier(specifier))],
-      t.stringLiteral(importPath),
-    ),
-  );
-
-  newPath.get('specifiers').forEach((s) => {
-    programPath.scope.registerBinding('module', s);
-  });
-
-  return specifier;
-}
 
 function addSpecifier(t, module, specifierName) {
   const has = module.node.specifiers.find(
@@ -273,6 +265,13 @@ const wrapperMethod = {
   INVALID: 'assertInvalid',
 };
 
+function createNamespaceWrapper(t, source, specifier, node) {
+  return t.callExpression(
+    t.memberExpression(t.identifier(source), t.identifier(specifier)),
+    [node],
+  );
+}
+
 function createWrapperForInterpolation(t, type, specifier, node) {
   if (specifier) {
     return t.callExpression(t.identifier(specifier), [node]);
@@ -300,7 +299,7 @@ function createContainer(source, type, fullName) {
 
 /**
  *
- * @param {(p: { methodName: string, moduleName: string, module: Path, namespace: boolean }) => void} fn
+ * @param {(p: { methodName: string, moduleName: string, module: Path, namespace: string | null }) => void} fn
  */
 function resolveAllowedMethod(t, path, fn) {
   // Check that tag.object is a `* as import from 'foliage'`
@@ -320,7 +319,7 @@ function resolveAllowedMethod(t, path, fn) {
           moduleName,
           methodName,
           module: resolved.module,
-          namespace: true,
+          namespace: objectName,
         });
       }
     }
@@ -332,7 +331,7 @@ function resolveAllowedMethod(t, path, fn) {
       if (resolved) {
         const { methodName, module } = resolved;
         const moduleName = module.node.source.value;
-        fn({ methodName, moduleName, module, namespace: false });
+        fn({ methodName, moduleName, module, namespace: null });
       }
     }
   }
