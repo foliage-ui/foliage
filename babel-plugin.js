@@ -386,7 +386,7 @@ function determineName(t, path) {
   if (t.isVariableDeclarator(path.parent) && t.isIdentifier(path.parent.id)) {
     return path.parent.id.name;
   }
-  if (t.isObjectExpression(path.parent)) {
+  if (t.isObjectExpression(path.parent) || t.isCallExpression(path.parent)) {
     return determineName(t, path.parentPath);
   }
   if (t.isObjectProperty(path.parent)) {
@@ -395,7 +395,11 @@ function determineName(t, path) {
     if (local && determined) {
       return `${determined}-${local}`;
     }
+    if (local) {
+      return local;
+    }
   }
+  return '';
 }
 
 function generateStableID(babelRoot, fileName, varName, line, column) {

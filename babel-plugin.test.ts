@@ -133,6 +133,43 @@ const first = css\`
 \`;
 `;
 
+const componentWithVariantsDeclaration = `
+import { css, component } from 'foliage-react';
+
+const size = '--ui-size';
+
+const chip = css\`
+  color: white;
+  background-color: black;
+  border-radius: 4px;
+  padding: var(\${size});
+\`
+
+export const Chip = component('div', [chip], {
+  defaults: { size: 'normal' },
+  variants: {
+    size: {
+      small: css\` \${size}: 6px; \`,
+      normal: css\` \${size}: 8px; \`,
+      large: css\` \${size}: 12px; \`,
+    }
+  }
+})
+`;
+
+const deepNestingDeterminesName = `
+import { css } from 'foliage';
+const first = {
+  second: {
+    third: css\` color: black \`,
+    fifth: {
+      sixth: css\`color:white;\`
+    },
+  },
+  fourth: css\`color:red\`
+}
+`;
+
 pluginTester({
   pluginName: 'foliage',
   plugin,
@@ -165,5 +202,7 @@ pluginTester({
     },
     fullInterpolationExample: interpolation,
     assertsDoNotConflictsWithExistsDeclarations,
+    componentWithVariantsDeclaration,
+    deepNestingDeterminesName,
   },
 });

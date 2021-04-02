@@ -60,6 +60,75 @@ const first = {
 
 `;
 
+exports[`foliage componentWithVariantsDeclaration: componentWithVariantsDeclaration 1`] = `
+
+import { css, component } from 'foliage-react';
+
+const size = '--ui-size';
+
+const chip = css\`
+  color: white;
+  background-color: black;
+  border-radius: 4px;
+  padding: var(\${size});
+\`
+
+export const Chip = component('div', [chip], {
+  defaults: { size: 'normal' },
+  variants: {
+    size: {
+      small: css\` \${size}: 6px; \`,
+      normal: css\` \${size}: 8px; \`,
+      large: css\` \${size}: 12px; \`,
+    }
+  }
+})
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import {
+  css,
+  component,
+  assertVariable as _assertVariable,
+} from 'foliage-react';
+const size = '--ui-size';
+const chip = {
+  content: \`.f-d0u6l1-chip{color:#fff;background-color:#000;border-radius:4px;padding:var(\${_assertVariable(
+    size,
+  )})}\`,
+  css: 'f-d0u6l1-chip',
+};
+export const Chip = component('div', [chip], {
+  defaults: {
+    size: 'normal',
+  },
+  variants: {
+    size: {
+      small: {
+        content: \`.f-h2aov8-Chip-variants-size-small{\${_assertVariable(
+          size,
+        )}:6px}\`,
+        css: 'f-h2aov8-Chip-variants-size-small',
+      },
+      normal: {
+        content: \`.fz7zr1a-Chip-variants-size-normal{\${_assertVariable(
+          size,
+        )}:8px}\`,
+        css: 'fz7zr1a-Chip-variants-size-normal',
+      },
+      large: {
+        content: \`.f-osz4ka-Chip-variants-size-large{\${_assertVariable(
+          size,
+        )}:12px}\`,
+        css: 'f-osz4ka-Chip-variants-size-large',
+      },
+    },
+  },
+});
+
+
+`;
+
 exports[`foliage cssImportedFromPackage: cssImportedFromPackage 1`] = `
 
 import {css} from 'foliage'; const example = css\`color: black\`
@@ -131,6 +200,44 @@ import { css as demo } from 'foliage';
 const example = {
   content: '.f1likb5-example{justify-content:center}',
   css: 'f1likb5-example',
+};
+
+
+`;
+
+exports[`foliage deepNestingDeterminesName: deepNestingDeterminesName 1`] = `
+
+import { css } from 'foliage';
+const first = {
+  second: {
+    third: css\` color: black \`,
+    fifth: {
+      sixth: css\`color:white;\`
+    },
+  },
+  fourth: css\`color:red\`
+}
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from 'foliage';
+const first = {
+  second: {
+    third: {
+      content: '.fq8i00d-first-second-third{color:#000}',
+      css: 'fq8i00d-first-second-third',
+    },
+    fifth: {
+      sixth: {
+        content: '.f5yqwwy-first-second-fifth-sixth{color:#fff}',
+        css: 'f5yqwwy-first-second-fifth-sixth',
+      },
+    },
+  },
+  fourth: {
+    content: '.fuv4pzp-first-fourth{color:red}',
+    css: 'fuv4pzp-first-fourth',
+  },
 };
 
 
