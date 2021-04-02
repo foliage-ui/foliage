@@ -95,33 +95,10 @@ module.exports = function (babel, options = {}) {
   }
 
   return {
-    name: 'ast-transform', // not required
-    // pre() {
-    //   this.requiredSpecifiers = new Set();
-    // },
-    // post({ path }, state) {
-    //   // const importNode = path.find((node) => node.isImportDeclaration());
-    //   path.traverse(
-    //     {
-    //       ImportDeclaration(path) {
-    //         if (t.isStringLiteral(path.node.source)) {
-    //           console.log(path.node.source.value);
-    //         }
-    //       },
-    //     },
-    //     state,
-    //   );
-
-    //   this.requiredSpecifiers = null;
-    // },
+    name: 'foliage/babel-plugin',
     visitor: {
-      //VariableDeclarator(path, state) {
-      //  path.node.id.name = addImport(path, 'mor', 'mod');
-      //  path.scope.rename('mor');
-      //},
-
       TaggedTemplateExpression(path, state) {
-        resolveAllowedMethod(
+        resolveImport(
           t,
           path,
           ({ methodName, moduleName, module, namespace }) => {
@@ -142,6 +119,7 @@ module.exports = function (babel, options = {}) {
               );
               const fullName = nameCreate(sid, derivedName);
 
+              // Content of compiled css (can be template literal or string literal)
               let content = null;
 
               // Process only tagged literals without interpolations
@@ -151,67 +129,94 @@ module.exports = function (babel, options = {}) {
                 const { css } = compile(wrapped);
                 content = t.stringLiteral(css);
               } else {
+                // Tagged template literal with interpolation expressions
                 const { quasis, expressions } = path.node.quasi;
-                const draftCssSource = [quasis[0].value.cooked];
-                expressions.forEach((node, index) => {
+                const firstQuasisSource = quasis[0].value.cooked;
+
+                const draftCssSource = [firstQuasisSource];
+
+                // Create interpolation marker for each expression
+                // Markers would be in css in order not to brake
+                expressions.forEach((_, index) => {
                   draftCssSource.push(interpolationMark(index));
                   draftCssSource.push(quasis[index + 1].value.cooked);
                 });
                 const source = draftCssSource.join(' ');
-                const wrapped = createContainer(source, methodName, fullName);
-                const { css, interpolations: interpType } = compile(wrapped);
 
+                // Source wrapped with .class {} or @keyframes name {}, etc.
+                const wrapped = createContainer(source, methodName, fullName);
+                const { css, interpolations: interpolationTypes } = compile(
+                  wrapped,
+                );
+
+                // After compilation, we need to detect each marker and split string back
+                // But after compilation marker may be duplicated, ex.: @keyframes autoprefixing as @-webkit-keyframes
                 let chunks = [css];
-                const interpolations = [];
+
+                // Will be passed to AST as is
+                const interpolationNodes = [];
 
                 expressions.forEach((node, index) => {
-                  const marker = interpolationMark(index);
-                  const result = [];
+                  const currentMarker = interpolationMark(index);
+                  const splatQuasis = [];
+
                   // iterate over each quasis
                   chunks.forEach((chunk) => {
-                    // if quasis has interpolation, split it to few parts
-                    if (chunk.includes(marker)) {
-                      chunk.split(marker).forEach((part, index, list) => {
-                        const last = index === list.length - 1;
-                        result.push(part);
+                    // if it has interpolation, split it
+                    if (chunk.includes(currentMarker)) {
+                      chunk
+                        .split(currentMarker)
+                        .forEach((part, index, list) => {
+                          const isLatest = index === list.length - 1;
 
-                        const interpolationType = interpType[marker];
+                          splatQuasis.push(part);
 
-                        // Add import of assert method
-                        const importSpecifier =
-                          wrapperMethod[interpolationType];
+                          // poscss compiler returned type for each interpolation
+                          // get interpolation type for current marker
+                          const interpolationType =
+                            interpolationTypes[currentMarker];
 
-                        const wrappedNode = namespace
-                          ? createNamespaceWrapper(
-                              t,
-                              namespace,
-                              importSpecifier,
-                              node,
-                            )
-                          : createWrapperForInterpolation(
-                              t,
-                              interpolationType,
-                              addSpecifier(t, module, importSpecifier),
-                              node,
-                            );
-                        // Add expression only after not last
-                        if (!last) interpolations.push(wrappedNode);
-                      });
+                          // What kind of assertion is required for interpolation type
+                          const assertMethodName =
+                            wrapperMethod[interpolationType];
+
+                          const wrappedNode = namespace
+                            ? wrapNamespaceInterpolation(
+                                t,
+                                namespace,
+                                assertMethodName,
+                                node,
+                              )
+                            : wrapInterpolation(
+                                t,
+                                interpolationType,
+                                addSpecifier(t, module, assertMethodName),
+                                node,
+                              );
+
+                          // Add expression only after not last
+                          if (!isLatest) interpolationNodes.push(wrappedNode);
+                        });
                     } else {
-                      result.push(chunk);
+                      // if no interpolation in chunk
+                      splatQuasis.push(chunk);
                     }
                   });
-                  chunks = result;
+                  chunks = splatQuasis;
+                });
+
+                const templateElements = chunks.map((item, index, list) => {
+                  const tail = index === list.length - 1;
+                  return t.templateElement({ raw: item }, tail);
                 });
 
                 content = t.templateLiteral(
-                  chunks.map((item, index, list) =>
-                    t.templateElement({ raw: item }, index === list.length - 1),
-                  ),
-                  interpolations,
+                  templateElements,
+                  interpolationNodes,
                 );
               }
 
+              // { content: 'compiled css', [methodType]: 'hashed-name' }
               path.replaceWith(
                 t.objectExpression([
                   t.objectProperty(t.identifier('content'), content),
@@ -231,30 +236,38 @@ module.exports = function (babel, options = {}) {
 
 const interpolationMark = (index) => `foliageInterpolationIndex${index}`;
 
+/**
+ * Add import specifier to exist import declaration
+ * Rename local binding name and return it
+ */
 function addSpecifier(t, module, specifierName) {
-  const has = module.node.specifiers.find(
+  const alreadyImported = module.node.specifiers.find(
     (specifier) => specifier.imported.name === specifierName,
   );
-  if (has) return has.local.name;
+  if (alreadyImported) return alreadyImported.local.name;
 
   const program = module.find((path) => path.isProgram());
 
+  // Add named import to declaration
   module.node.specifiers.push(
     t.importSpecifier(t.identifier(specifierName), t.identifier(specifierName)),
   );
 
-  let found;
+  // Resolve actual specifier with bound references
+  let foundSpecifier;
 
-  module.get('specifiers').forEach((s) => {
-    if (s.node.imported.name === specifierName) {
-      found = s;
+  module.get('specifiers').forEach((specifier) => {
+    if (specifier.node.imported.name === specifierName) {
+      foundSpecifier = specifier;
     }
-    program.scope.registerBinding('module', s);
+    // it is required to bind local import specifier with references in another code
+    program.scope.registerBinding('module', specifier);
   });
 
+  // Rename local name, to solve potential conflicts with already declared names
   program.scope.rename(specifierName);
 
-  return found.node.local.name;
+  return foundSpecifier.node.local.name;
 }
 
 const wrapperMethod = {
@@ -265,14 +278,14 @@ const wrapperMethod = {
   INVALID: 'assertInvalid',
 };
 
-function createNamespaceWrapper(t, source, specifier, node) {
+function wrapNamespaceInterpolation(t, source, specifier, node) {
   return t.callExpression(
     t.memberExpression(t.identifier(source), t.identifier(specifier)),
     [node],
   );
 }
 
-function createWrapperForInterpolation(t, type, specifier, node) {
+function wrapInterpolation(t, type, specifier, node) {
   if (specifier) {
     return t.callExpression(t.identifier(specifier), [node]);
   }
@@ -282,6 +295,11 @@ function createWrapperForInterpolation(t, type, specifier, node) {
   );
 }
 
+/**
+ * CSS block should be wrapped with class name
+ * Keyframes should have name and @keyframes
+ * Global styles should be just compiled, no wrapper are required
+ */
 function createContainer(source, type, fullName) {
   if (type === 'css') {
     return `.${fullName}{${source}}`;
@@ -298,11 +316,19 @@ function createContainer(source, type, fullName) {
 }
 
 /**
- *
+ * Find import for passed path
+ * Path should be TaggedTemplateExpression
  * @param {(p: { methodName: string, moduleName: string, module: Path, namespace: string | null }) => void} fn
  */
-function resolveAllowedMethod(t, path, fn) {
+function resolveImport(t, path, fn) {
+  if (!t.isTaggedTemplateExpression(path)) {
+    throw new TypeError(
+      `resolveImport called on unsupported type "${path.type}". It is should be "TaggedTemplateExpression"`,
+    );
+  }
+
   // Check that tag.object is a `* as import from 'foliage'`
+  // foliage.css``
   if (
     t.isMemberExpression(path.node.tag) &&
     t.isIdentifier(path.node.tag.object) &&
@@ -315,7 +341,7 @@ function resolveAllowedMethod(t, path, fn) {
       const resolved = resolveNamespaceImport(t, binding);
       if (resolved) {
         const moduleName = resolved.module.node.source.value;
-        fn({
+        return fn({
           moduleName,
           methodName,
           module: resolved.module,
@@ -323,7 +349,10 @@ function resolveAllowedMethod(t, path, fn) {
         });
       }
     }
-  } else if (t.isIdentifier(path.node.tag)) {
+  }
+
+  // css``
+  if (t.isIdentifier(path.node.tag)) {
     const localMethodName = path.node.tag.name;
     const binding = path.scope.getOwnBinding(localMethodName);
     if (binding) {
