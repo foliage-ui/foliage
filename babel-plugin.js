@@ -102,7 +102,7 @@ module.exports = function (babel, options = {}) {
       //  path.scope.rename('mor');
       //},
 
-      TaggedTemplateExpression(path, _state) {
+      TaggedTemplateExpression(path, state) {
         resolveAllowedMethod(t, path, ({ methodName, moduleName }) => {
           // Check that template tag imported from allowed module
           // And method supports for compilation
@@ -113,8 +113,8 @@ module.exports = function (babel, options = {}) {
             // Create stable unique id with readable name
             const derivedName = determineName(t, path);
             const sid = generateStableID(
-              '', // babelRoot
-              '', // fileName
+              state.file.opts.root,
+              state.filename,
               derivedName,
               path.node.loc.start.line,
               path.node.loc.start.column,
@@ -139,7 +139,6 @@ module.exports = function (babel, options = {}) {
               const source = draftCssSource.join(' ');
               const wrapped = createContainer(source, methodName, fullName);
               const { css, interpolations: interpType } = compile(wrapped);
-              console.log(interpType);
 
               let chunks = [css];
               const interpolations = [];
@@ -352,12 +351,18 @@ function determineName(t, path) {
 
 function generateStableID(babelRoot, fileName, varName, line, column) {
   const normalizedPath = stripRoot(babelRoot, fileName, false);
-  return hashCode(`${varName} ${normalizedPath} [${line}, ${column}]`);
+  const hash = hashCode(`${varName} ${normalizedPath} [${line}, ${column}]`);
+  return `f${hash}`;
 }
 
-function stripRoot(babelRoot, fileName, _omitFirstSlash) {
-  //  const {sep, normalize} = require('path')
-  return fileName.replace(babelRoot, '');
+function stripRoot(babelRoot, fileName, omitFirstSlash) {
+  const { sep, normalize } = require('path');
+  const rawPath = fileName.replace(babelRoot, '');
+  let normalizedSeq = normalize(rawPath).split(sep);
+  if (omitFirstSlash && normalizedSeq.length > 0 && normalizedSeq[0] === '') {
+    normalizedSeq = normalizedSeq.slice(1);
+  }
+  return normalizedSeq.join('/');
 }
 
 function hashCode(s) {
@@ -365,6 +370,5 @@ function hashCode(s) {
   let i = 0;
   if (s.length > 0)
     while (i < s.length) h = ((h << 5) - h + s.charCodeAt(i++)) | 0;
-  const d = h < 0 ? (-1 * h) << 5 : h;
-  return d.toString(36);
+  return h.toString(36);
 }

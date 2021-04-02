@@ -8,8 +8,8 @@ import {css} from 'foliage'; const example = css\`color: black\`
 
 import { css } from 'foliage';
 const example = {
-  content: '.xb1pwo-example{color:#000}',
-  css: 'xb1pwo-example',
+  content: '.f1lijm6-example{color:#000}',
+  css: 'f1lijm6-example',
 };
 
 
@@ -23,8 +23,8 @@ import {css} from 'foliage-react'; const demo = css\`.global & { [data-demo="a"]
 
 import { css } from 'foliage-react';
 const demo = {
-  content: '.global .csqqgc-demo [data-demo=a]{color:#000}',
-  css: 'csqqgc-demo',
+  content: '.global .f-se2al8-demo [data-demo=a]{color:#000}',
+  css: 'f-se2al8-demo',
 };
 
 
@@ -48,14 +48,14 @@ const second = css\`
 
 import { css } from 'foliage';
 const first = {
-  content: '.yuc9wf-first{color:#000}.yuc9wf-first>*{padding-left:1rem}',
-  css: 'yuc9wf-first',
+  content: '.f-gdcl67-first{color:#000}.f-gdcl67-first>*{padding-left:1rem}',
+  css: 'f-gdcl67-first',
 };
 const second = {
-  content: \`.a8hqie-second{color:red}.a8hqie-second \${assertSelector(
+  content: \`.f-if491s-second{color:red}.f-if491s-second \${assertSelector(
     first,
   )}{color:#fff}\`,
-  css: 'a8hqie-second',
+  css: 'f-if491s-second',
 };
 
 
@@ -69,8 +69,8 @@ import {css as demo} from 'foliage'; const example = demo\`justify-content: cent
 
 import { css as demo } from 'foliage';
 const example = {
-  content: '.xb1qln-example{justify-content:center}',
-  css: 'xb1qln-example',
+  content: '.f1likb5-example{justify-content:center}',
+  css: 'f1likb5-example',
 };
 
 
@@ -133,23 +133,23 @@ const theme = {
   },
 };
 const first = {
-  content: '.-di37k0-first{display:block}',
-  css: '-di37k0-first',
+  content: '.f-d218eu-first{display:block}',
+  css: 'f-d218eu-first',
 };
 const pulse = {
   content:
-    '@-webkit-keyframes qgp328-pulse{0%,to{opacity:1}50%{opacity:.2}}@keyframes qgp328-pulse{0%,to{opacity:1}50%{opacity:.2}}',
-  keyframes: 'qgp328-pulse',
+    '@-webkit-keyframes f-p241qa-pulse{0%,to{opacity:1}50%{opacity:.2}}@keyframes f-p241qa-pulse{0%,to{opacity:1}50%{opacity:.2}}',
+  keyframes: 'f-p241qa-pulse',
 };
 const second = {
-  content: \`.icc4e8-second{font-size:var(\${assertVariable(
+  content: \`.f178xr0-second{font-size:var(\${assertVariable(
     theme.size.normal,
   )});-webkit-animation:1s ease-in-out infinite \${assertKeyframe(
     pulse,
   )};animation:1s ease-in-out infinite \${assertKeyframe(
     pulse,
-  )}}\${assertSelector(first)} .icc4e8-second{display:flex}\`,
-  css: 'icc4e8-second',
+  )}}\${assertSelector(first)} .f178xr0-second{display:flex}\`,
+  css: 'f178xr0-second',
 };
 
 
@@ -180,17 +180,17 @@ const glob = createGlobalStyle\`
 
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = {
-  content: '.pr0ig0-part{color:#000}.pr0ig0-part>*{padding-left:1rem}',
-  css: 'pr0ig0-part',
+  content: '.f-u8us0b-part{color:#000}.f-u8us0b-part>*{padding-left:1rem}',
+  css: 'f-u8us0b-part',
 };
 const anim = {
   content:
-    '@-webkit-keyframes wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
-  keyframes: 'wpxzoa-anim',
+    '@-webkit-keyframes f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'f41ecfi-anim',
 };
 const glob = {
   content: 'body{position:fixed;top:0;left:0}',
-  createGlobalStyle: 'l0hjnn-glob',
+  createGlobalStyle: 'f-spiibj-glob',
 };
 
 
@@ -215,14 +215,14 @@ const element = css\`
 import { css, keyframes } from 'foliage';
 const anim = {
   content:
-    '@-webkit-keyframes utri3i-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes utri3i-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
-  keyframes: 'utri3i-anim',
+    '@-webkit-keyframes f257uuq-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes f257uuq-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'f257uuq-anim',
 };
 const element = {
-  content: \`.-na48dc-element{color:red;-webkit-animation:3s ease-in 1s infinite \${assertKeyframe(
+  content: \`.f7qew45-element{color:red;-webkit-animation:3s ease-in 1s infinite \${assertKeyframe(
     anim,
   )};animation:3s ease-in 1s infinite \${assertKeyframe(anim)}}\`,
-  css: '-na48dc-element',
+  css: 'f7qew45-element',
 };
 
 
@@ -257,17 +257,17 @@ const theme = example.vars\`
 
 import * as example from 'foliage';
 const part = {
-  content: '.pr0ig0-part{color:#000}.pr0ig0-part>*{padding-left:1rem}',
-  css: 'pr0ig0-part',
+  content: '.f-u8us0b-part{color:#000}.f-u8us0b-part>*{padding-left:1rem}',
+  css: 'f-u8us0b-part',
 };
 const anim = {
   content:
-    '@-webkit-keyframes wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
-  keyframes: 'wpxzoa-anim',
+    '@-webkit-keyframes f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'f41ecfi-anim',
 };
 const glob = {
   content: 'body{position:fixed;top:0;left:0}',
-  createGlobalStyle: 'l0hjnn-glob',
+  createGlobalStyle: 'f-spiibj-glob',
 };
 const theme = example.vars\`
   --demo: 123px;
@@ -302,17 +302,17 @@ const glob = createGlobalStyle\`
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = {
   content:
-    '.prefix-pr0ig0-part{color:#000}.prefix-pr0ig0-part>*{padding-left:1rem}',
-  css: 'prefix-pr0ig0-part',
+    '.prefix-f-u8us0b-part{color:#000}.prefix-f-u8us0b-part>*{padding-left:1rem}',
+  css: 'prefix-f-u8us0b-part',
 };
 const anim = {
   content:
-    '@-webkit-keyframes prefix-wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes prefix-wpxzoa-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
-  keyframes: 'prefix-wpxzoa-anim',
+    '@-webkit-keyframes prefix-f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes prefix-f41ecfi-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'prefix-f41ecfi-anim',
 };
 const glob = {
   content: 'body{position:fixed;top:0;left:0}',
-  createGlobalStyle: 'prefix-l0hjnn-glob',
+  createGlobalStyle: 'prefix-f-spiibj-glob',
 };
 
 
@@ -343,17 +343,17 @@ const glob = createGlobalStyle\`
 
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = {
-  content: '.prefix-pr0ig0{color:#000}.prefix-pr0ig0>*{padding-left:1rem}',
-  css: 'prefix-pr0ig0',
+  content: '.prefix-f-u8us0b{color:#000}.prefix-f-u8us0b>*{padding-left:1rem}',
+  css: 'prefix-f-u8us0b',
 };
 const anim = {
   content:
-    '@-webkit-keyframes prefix-wpxzoa{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes prefix-wpxzoa{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
-  keyframes: 'prefix-wpxzoa',
+    '@-webkit-keyframes prefix-f41ecfi{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes prefix-f41ecfi{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
+  keyframes: 'prefix-f41ecfi',
 };
 const glob = {
   content: 'body{position:fixed;top:0;left:0}',
-  createGlobalStyle: 'prefix-l0hjnn',
+  createGlobalStyle: 'prefix-f-spiibj',
 };
 
 
@@ -367,8 +367,8 @@ import {vars, css} from 'foliage'; const a = css\`outline: none;\`; const b = va
 
 import { vars, css } from 'foliage';
 const a = {
-  content: '.fo0rip-a{outline:0}',
-  css: 'fo0rip-a',
+  content: '.f-3x0vwb-a{outline:0}',
+  css: 'f-3x0vwb-a',
 };
 const b = vars\`--random: 1px;\`;
 
@@ -383,8 +383,8 @@ import {css} from 'foliage'; const example = css\`span{display:grid}\`
 
 import { css } from 'foliage';
 const example = {
-  content: '.xb1pwo span{display:grid}',
-  css: 'xb1pwo',
+  content: '.f1lijm6 span{display:grid}',
+  css: 'f1lijm6',
 };
 
 
