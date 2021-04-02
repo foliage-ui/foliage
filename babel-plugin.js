@@ -96,6 +96,24 @@ module.exports = function (babel, options = {}) {
 
   return {
     name: 'ast-transform', // not required
+    // pre() {
+    //   this.requiredSpecifiers = new Set();
+    // },
+    // post({ path }, state) {
+    //   // const importNode = path.find((node) => node.isImportDeclaration());
+    //   path.traverse(
+    //     {
+    //       ImportDeclaration(path) {
+    //         if (t.isStringLiteral(path.node.source)) {
+    //           console.log(path.node.source.value);
+    //         }
+    //       },
+    //     },
+    //     state,
+    //   );
+
+    //   this.requiredSpecifiers = null;
+    // },
     visitor: {
       //VariableDeclarator(path, state) {
       //  path.node.id.name = addImport(path, 'mor', 'mod');
@@ -103,7 +121,7 @@ module.exports = function (babel, options = {}) {
       //},
 
       TaggedTemplateExpression(path, state) {
-        resolveAllowedMethod(t, path, ({ methodName, moduleName }) => {
+        resolveAllowedMethod(t, path, ({ methodName, moduleName, module }) => {
           // Check that template tag imported from allowed module
           // And method supports for compilation
           if (
@@ -154,9 +172,17 @@ module.exports = function (babel, options = {}) {
                       const last = index === list.length - 1;
                       result.push(part);
 
+                      const interpolationType = interpType[marker];
+
+                      // Add import of assert method
+                      const importSpecifier = wrapperMethod[interpolationType];
+
+                      const speci = addSpecifier(t, module, importSpecifier);
+
                       const wrappedNode = createWrapperForInterpolation(
                         t,
-                        interpType[marker],
+                        interpolationType,
+                        speci,
                         node,
                       );
                       // Add expression only after not last
@@ -213,30 +239,48 @@ function addImport(t, path, specifier, importPath) {
   return specifier;
 }
 
-function createWrapperForInterpolation(t, type, node) {
-  switch (type) {
-    case 'selector': {
-      return t.callExpression(t.identifier('assertSelector'), [node]);
-    }
+function addSpecifier(t, module, specifierName) {
+  const has = module.node.specifiers.find(
+    (specifier) => specifier.imported.name === specifierName,
+  );
+  if (has) return has.local.name;
 
-    case 'var':
-    case 'custom-property': {
-      return t.callExpression(t.identifier('assertVariable'), [node]);
-    }
+  const program = module.find((path) => path.isProgram());
 
-    case 'keyframe': {
-      return t.callExpression(t.identifier('assertKeyframe'), [node]);
-    }
+  module.node.specifiers.push(
+    t.importSpecifier(t.identifier(specifierName), t.identifier(specifierName)),
+  );
 
-    case 'INVALID': {
-      return t.callExpression(t.identifier('assertInvalid'), [node]);
-    }
+  let found;
 
-    default:
-      throw new TypeError(
-        `Invalid interpolation type "${type}". Please, report an issue at https://github.com/effector/foliage/issues`,
-      );
+  module.get('specifiers').forEach((s) => {
+    if (s.node.imported.name === specifierName) {
+      found = s;
+    }
+    program.scope.registerBinding('module', s);
+  });
+
+  program.scope.rename(specifierName);
+
+  return found.node.local.name;
+}
+
+const wrapperMethod = {
+  selector: 'assertSelector',
+  var: 'assertVariable',
+  'custom-property': 'assertVariable',
+  keyframe: 'assertKeyframe',
+  INVALID: 'assertInvalid',
+};
+
+function createWrapperForInterpolation(t, type, specifier, node) {
+  if (specifier) {
+    return t.callExpression(t.identifier(specifier), [node]);
   }
+
+  throw new TypeError(
+    `Invalid interpolation type "${type}". Please, report an issue at https://github.com/effector/foliage/issues`,
+  );
 }
 
 function createContainer(source, type, fullName) {
@@ -256,7 +300,7 @@ function createContainer(source, type, fullName) {
 
 /**
  *
- * @param {(p: { methodName: string, moduleName: string }) => void} fn
+ * @param {(p: { methodName: string, moduleName: string, module: Path, namespace: boolean }) => void} fn
  */
 function resolveAllowedMethod(t, path, fn) {
   // Check that tag.object is a `* as import from 'foliage'`
@@ -272,7 +316,12 @@ function resolveAllowedMethod(t, path, fn) {
       const resolved = resolveNamespaceImport(t, binding);
       if (resolved) {
         const moduleName = resolved.module.node.source.value;
-        fn({ moduleName, methodName });
+        fn({
+          moduleName,
+          methodName,
+          module: resolved.module,
+          namespace: true,
+        });
       }
     }
   } else if (t.isIdentifier(path.node.tag)) {
@@ -283,7 +332,7 @@ function resolveAllowedMethod(t, path, fn) {
       if (resolved) {
         const { methodName, module } = resolved;
         const moduleName = module.node.source.value;
-        fn({ methodName, moduleName });
+        fn({ methodName, moduleName, module, namespace: false });
       }
     }
   }

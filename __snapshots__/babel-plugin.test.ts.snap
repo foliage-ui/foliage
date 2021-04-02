@@ -46,13 +46,13 @@ const second = css\`
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { css } from 'foliage';
+import { css, assertSelector as _assertSelector } from 'foliage';
 const first = {
   content: '.f-gdcl67-first{color:#000}.f-gdcl67-first>*{padding-left:1rem}',
   css: 'f-gdcl67-first',
 };
 const second = {
-  content: \`.f-if491s-second{color:red}.f-if491s-second \${assertSelector(
+  content: \`.f-if491s-second{color:red}.f-if491s-second \${_assertSelector(
     first,
   )}{color:#fff}\`,
   css: 'f-if491s-second',
@@ -126,7 +126,13 @@ const second = css\`
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { css, keyframes } from 'foliage';
+import {
+  css,
+  keyframes,
+  assertVariable as _assertVariable,
+  assertKeyframe as _assertKeyframe,
+  assertSelector as _assertSelector,
+} from 'foliage';
 const theme = {
   size: {
     normal: '--demo-size-normal',
@@ -142,13 +148,13 @@ const pulse = {
   keyframes: 'f-p241qa-pulse',
 };
 const second = {
-  content: \`.f178xr0-second{font-size:var(\${assertVariable(
+  content: \`.f178xr0-second{font-size:var(\${_assertVariable(
     theme.size.normal,
-  )});-webkit-animation:1s ease-in-out infinite \${assertKeyframe(
+  )});-webkit-animation:1s ease-in-out infinite \${_assertKeyframe(
     pulse,
-  )};animation:1s ease-in-out infinite \${assertKeyframe(
+  )};animation:1s ease-in-out infinite \${_assertKeyframe(
     pulse,
-  )}}\${assertSelector(first)} .f178xr0-second{display:flex}\`,
+  )}}\${_assertSelector(first)} .f178xr0-second{display:flex}\`,
   css: 'f178xr0-second',
 };
 
@@ -212,16 +218,16 @@ const element = css\`
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
-import { css, keyframes } from 'foliage';
+import { css, keyframes, assertKeyframe as _assertKeyframe } from 'foliage';
 const anim = {
   content:
     '@-webkit-keyframes f257uuq-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}@keyframes f257uuq-anim{0%{transform:rotate(0deg)}to{transform:rotate(180deg)}}',
   keyframes: 'f257uuq-anim',
 };
 const element = {
-  content: \`.f7qew45-element{color:red;-webkit-animation:3s ease-in 1s infinite \${assertKeyframe(
+  content: \`.f7qew45-element{color:red;-webkit-animation:3s ease-in 1s infinite \${_assertKeyframe(
     anim,
-  )};animation:3s ease-in 1s infinite \${assertKeyframe(anim)}}\`,
+  )};animation:3s ease-in 1s infinite \${_assertKeyframe(anim)}}\`,
   css: 'f7qew45-element',
 };
 
