@@ -60,6 +60,71 @@ const first = {
 
 `;
 
+exports[`foliage combination: combination 1`] = `
+
+import { css } from 'foliage'
+import * as f from 'foliage'
+
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  }
+}
+
+const first = css\`
+  display: block;
+  \${theme.size.normal}: 12px;
+\`
+
+const pulse = f.keyframes\`
+  0% { opacity: 1 }
+  50% { opacity: 0.2 }
+  100% { opacity: 1 }
+\`
+
+const second = f.css\`
+  font-size: var(\${theme.size.normal});
+  animation: 1s ease-in-out infinite \${pulse};
+
+  \${first} & {
+    display: flex;
+  }
+\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, assertVariable as _assertVariable } from 'foliage';
+import * as f from 'foliage';
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  },
+};
+const first = {
+  content: \`.f-mvz1xy-first{display:block;\${_assertVariable(
+    theme.size.normal,
+  )}:12px}\`,
+  css: 'f-mvz1xy-first',
+};
+const pulse = {
+  content:
+    '@-webkit-keyframes f-o40sxw-pulse{0%,to{opacity:1}50%{opacity:.2}}@keyframes f-o40sxw-pulse{0%,to{opacity:1}50%{opacity:.2}}',
+  keyframes: 'f-o40sxw-pulse',
+};
+const second = {
+  content: \`.fc3a8th-second{font-size:var(\${f.assertVariable(
+    theme.size.normal,
+  )});-webkit-animation:1s ease-in-out infinite \${f.assertKeyframe(
+    pulse,
+  )};animation:1s ease-in-out infinite \${f.assertKeyframe(
+    pulse,
+  )}}\${f.assertSelector(first)} .fc3a8th-second{display:flex}\`,
+  css: 'fc3a8th-second',
+};
+
+
+`;
+
 exports[`foliage componentWithVariantsDeclaration: componentWithVariantsDeclaration 1`] = `
 
 import { css, component } from 'foliage-react';

@@ -140,6 +140,37 @@ const second = foli.css\`
 \`
 `;
 
+const combination = `
+import { css } from 'foliage'
+import * as f from 'foliage'
+
+const theme = {
+  size: {
+    normal: '--demo-size-normal',
+  }
+}
+
+const first = css\`
+  display: block;
+  \${theme.size.normal}: 12px;
+\`
+
+const pulse = f.keyframes\`
+  0% { opacity: 1 }
+  50% { opacity: 0.2 }
+  100% { opacity: 1 }
+\`
+
+const second = f.css\`
+  font-size: var(\${theme.size.normal});
+  animation: 1s ease-in-out infinite \${pulse};
+
+  \${first} & {
+    display: flex;
+  }
+\`
+`;
+
 const assertsDoNotConflictsWithExistsDeclarations = `
 import { css, keyframes } from 'foliage'
 
@@ -234,5 +265,6 @@ pluginTester({
     assertsDoNotConflictsWithExistsDeclarations,
     componentWithVariantsDeclaration,
     deepNestingDeterminesName,
+    combination,
   },
 });
