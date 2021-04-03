@@ -4,8 +4,6 @@ const autoprefixer = require('autoprefixer');
 const nested = require('postcss-nested');
 const csso = require('csso');
 
-// https://github.com/wbyoung/babel-plugin-transform-postcss/blob/7d0cc7f9df569e9df6c78ae55ec6f86bac362c40/src/plugin.js
-
 module.exports = function (babel, options = {}) {
   const { types: t } = babel;
   const {
@@ -19,13 +17,13 @@ module.exports = function (babel, options = {}) {
     ? (sid, name) => [prefix, sid, name].filter(Boolean).join('-')
     : (sid) => [prefix, sid].filter(Boolean).join('-');
 
-  const compiler = postcss([autoprefixer(), nested()]);
-
   const markerRegexp = new RegExp(interpolationMark('\\d+'), 'gm');
   const varMarkerRegexp = new RegExp(
     `var\\(\\s*${interpolationMark('\\d+')}`,
     'gm',
   );
+
+  const compiler = postcss([autoprefixer(), nested()]);
 
   function compile(source, file = 'source.css') {
     const ast = postcss.parse(source);
