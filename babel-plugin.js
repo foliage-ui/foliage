@@ -250,7 +250,10 @@ function addSpecifier(t, module, specifierName) {
 
   // Add named import to declaration
   module.node.specifiers.push(
-    t.importSpecifier(t.identifier(specifierName), t.identifier(specifierName)),
+    t.importSpecifier(
+      module.scope.generateUidIdentifier(specifierName),
+      t.identifier(specifierName),
+    ),
   );
 
   // Resolve actual specifier with bound references
@@ -261,11 +264,12 @@ function addSpecifier(t, module, specifierName) {
       foundSpecifier = specifier;
     }
     // it is required to bind local import specifier with references in another code
-    program.scope.registerBinding('module', specifier);
   });
 
+  program.scope.registerBinding('module', foundSpecifier);
+
   // Rename local name, to solve potential conflicts with already declared names
-  program.scope.rename(specifierName);
+  // program.scope.rename(specifierName);
 
   return foundSpecifier.node.local.name;
 }

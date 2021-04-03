@@ -1,8 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[
-  `foliage assertsDoNotConflictsWithExistsDeclarations: assertsDoNotConflictsWithExistsDeclarations 1`
-] = `
+exports[`foliage assertsDoNotConflictsWithExistsDeclarations: assertsDoNotConflictsWithExistsDeclarations 1`] = `
 
 import { css, keyframes } from 'foliage'
 
@@ -130,9 +128,7 @@ const second = {
 
 `;
 
-exports[
-  `foliage componentWithVariantsDeclaration: componentWithVariantsDeclaration 1`
-] = `
+exports[`foliage componentWithVariantsDeclaration: componentWithVariantsDeclaration 1`] = `
 
 import { css, component } from 'foliage-react';
 
@@ -460,9 +456,7 @@ const second = {
 
 `;
 
-exports[
-  `foliage keyframesAndGlobalStylesShouldCompile: keyframesAndGlobalStylesShouldCompile 1`
-] = `
+exports[`foliage keyframesAndGlobalStylesShouldCompile: keyframesAndGlobalStylesShouldCompile 1`] = `
 
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = css\`
@@ -503,9 +497,7 @@ const glob = {
 
 `;
 
-exports[
-  `foliage keyframesInterpolationInCss: keyframesInterpolationInCss 1`
-] = `
+exports[`foliage keyframesInterpolationInCss: keyframesInterpolationInCss 1`] = `
 
 import { css, keyframes } from 'foliage';
 
