@@ -177,6 +177,7 @@ import { css, keyframes } from 'foliage'
 function _assertKeyframe() {}
 const _assertVariable = 1;
 const _assertSelector = () => {};
+function assertKeyframe() {}
 
 const size = '--demo-size';
 const speed = '--demo-anim-speed';

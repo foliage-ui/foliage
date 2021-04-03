@@ -1,12 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`foliage assertsDoNotConflictsWithExistsDeclarations: assertsDoNotConflictsWithExistsDeclarations 1`] = `
+exports[
+  `foliage assertsDoNotConflictsWithExistsDeclarations: assertsDoNotConflictsWithExistsDeclarations 1`
+] = `
 
 import { css, keyframes } from 'foliage'
 
 function _assertKeyframe() {}
 const _assertVariable = 1;
 const _assertSelector = () => {};
+function assertKeyframe() {}
 
 const size = '--demo-size';
 const speed = '--demo-anim-speed';
@@ -37,15 +40,17 @@ const _assertVariable = 1;
 
 const _assertSelector = () => {};
 
+function assertKeyframe() {}
+
 const size = '--demo-size';
 const speed = '--demo-anim-speed';
 const anim = {
   content:
-    '@-webkit-keyframes f-vtnygm-anim{0%{opacity:0}}@keyframes f-vtnygm-anim{0%{opacity:0}}',
-  keyframes: 'f-vtnygm-anim',
+    '@-webkit-keyframes f-vcmc2f-anim{0%{opacity:0}}@keyframes f-vcmc2f-anim{0%{opacity:0}}',
+  keyframes: 'f-vcmc2f-anim',
 };
 const first = {
-  content: \`.f-kiqxyz-first{color:#000;font-size:var(\${_assertVariable2(
+  content: \`.f-k1pbks-first{color:#000;font-size:var(\${_assertVariable2(
     size,
   )});-webkit-animation:var(\${_assertVariable2(
     speed,
@@ -54,7 +59,7 @@ const first = {
   )};animation:var(\${_assertKeyframe2(
     anim,
   )}) infinite linear \${_assertKeyframe2(anim)}}\`,
-  css: 'f-kiqxyz-first',
+  css: 'f-k1pbks-first',
 };
 
 
@@ -125,7 +130,9 @@ const second = {
 
 `;
 
-exports[`foliage componentWithVariantsDeclaration: componentWithVariantsDeclaration 1`] = `
+exports[
+  `foliage componentWithVariantsDeclaration: componentWithVariantsDeclaration 1`
+] = `
 
 import { css, component } from 'foliage-react';
 
@@ -453,7 +460,9 @@ const second = {
 
 `;
 
-exports[`foliage keyframesAndGlobalStylesShouldCompile: keyframesAndGlobalStylesShouldCompile 1`] = `
+exports[
+  `foliage keyframesAndGlobalStylesShouldCompile: keyframesAndGlobalStylesShouldCompile 1`
+] = `
 
 import { css, keyframes, createGlobalStyle } from 'foliage';
 const part = css\`
@@ -494,7 +503,9 @@ const glob = {
 
 `;
 
-exports[`foliage keyframesInterpolationInCss: keyframesInterpolationInCss 1`] = `
+exports[
+  `foliage keyframesInterpolationInCss: keyframesInterpolationInCss 1`
+] = `
 
 import { css, keyframes } from 'foliage';
 
