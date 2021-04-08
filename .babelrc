@@ -1,4 +1,0 @@
-{
-  "plugins": [["effector/babel-plugin", { "addLoc": true }]],
-  "presets": ["@babel/preset-typescript", "@babel/preset-env"]
-}
