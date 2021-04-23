@@ -2,7 +2,7 @@
 
 <!-- [NPM](https://npmjs.org/package/foliage) -->
 
-[GitHub](https://github.com/effector/foliage)
+[GitHub](https://github.com/effector/foliage) [dev.to](https://dev.to/foliage)
 
 ## Usage with React
 
