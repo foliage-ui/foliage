@@ -140,7 +140,7 @@ module.exports = function (babel, options = {}) {
                   draftCssSource.push(interpolationMark(index));
                   draftCssSource.push(quasis[index + 1].value.cooked);
                 });
-                const source = draftCssSource.join(' ');
+                const source = draftCssSource.join('');
 
                 // Source wrapped with .class {} or @keyframes name {}, etc.
                 const wrapped = createContainer(source, methodName, fullName);
@@ -152,20 +152,12 @@ module.exports = function (babel, options = {}) {
                 // But after compilation marker may be duplicated, ex.: @keyframes autoprefixing as @-webkit-keyframes
                 let chunks = [css];
 
-                console.log('CHUNKS before', chunks);
-
                 // Will be passed to AST as is
                 const interpolationNodes = [];
 
                 expressions.forEach((nodeOriginal, index) => {
                   const currentMarker = interpolationMark(index);
                   const splatQuasis = [];
-                  console.log(
-                    'EXPRESSION each',
-                    currentMarker,
-                    nodeOriginal,
-                    index,
-                  );
 
                   // iterate over each quasis
                   chunks.forEach((chunk) => {
@@ -214,12 +206,6 @@ module.exports = function (babel, options = {}) {
                   chunks = splatQuasis;
                 });
 
-                console.log('CHUNKS', chunks);
-                console.log(
-                  'INTERPOLATION NODES',
-                  JSON.stringify(interpolationNodes, null, 2),
-                );
-
                 const templateElements = chunks.map((item, index, list) => {
                   const tail = index === list.length - 1;
                   return t.templateElement({ raw: item, cooked: item }, tail);
@@ -230,8 +216,6 @@ module.exports = function (babel, options = {}) {
                   interpolationNodes,
                 );
               }
-
-              console.log('CONTENT', JSON.stringify(content, null, 2));
               // { content: 'compiled css', [methodType]: 'hashed-name' }
               path.replaceWith(
                 t.objectExpression([
@@ -245,7 +229,6 @@ module.exports = function (babel, options = {}) {
                   ),
                 ]),
               );
-              console.log('----------');
             }
           },
         );
