@@ -1,10 +1,10 @@
 module.exports = {
   plugins: [
-    ['effector/babel-plugin', { addLoc: true }],
     [
       require.resolve('./babel-plugin.js'),
       { allowedModules: '../foliage', debug: true },
     ],
+    ['effector/babel-plugin', { addLoc: true }],
   ],
-  presets: ['@babel/preset-typescript', '@babel/preset-env'],
+  presets: [['@babel/preset-env', {}], '@babel/preset-typescript'],
 };

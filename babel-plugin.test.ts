@@ -231,6 +231,29 @@ const first = {
 }
 `;
 
+const selectorOfComponent = `
+import { css } from 'foliage';
+const button = css\`
+  padding: 1rem 2rem;
+  border: 2px solid gray;
+  border-radius: 1rem;
+  color: white;
+  background-color: black;
+  appearance: none;
+\`;
+
+const primary = css\`
+  background-color: black;
+  color: white;
+  padding: 1rem 2rem;
+
+  \${button} {
+    background-color: red;
+    color: white;
+  }
+\`;
+`;
+
 pluginTester({
   pluginName: 'foliage',
   plugin,
@@ -267,5 +290,6 @@ pluginTester({
     componentWithVariantsDeclaration,
     deepNestingDeterminesName,
     combination,
+    selectorOfComponent,
   },
 });

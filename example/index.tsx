@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { css } from '../foliage';
+import { css, assertSelector as ass } from '../foliage';
 import { component } from '../react';
 
 const button = css`
@@ -37,7 +37,18 @@ const primary = css`
     background-color: red;
     color: white;
   }
+
+  ${button} + ${button} {
+    margin-left: 15px;
+  }
 `;
+
+const primary2 = {
+  content: `.f520of8-primary{background-color:#000;color:#fff;padding:1rem 2rem}.f520of8-primary ${ass(
+    button,
+  )}{background-color:red;color:#fff}`,
+  css: 'f520of8-primary',
+};
 
 const Wrapper = component('div', [primary]);
 

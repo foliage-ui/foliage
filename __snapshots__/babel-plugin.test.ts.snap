@@ -660,6 +660,47 @@ const glob = {
 
 `;
 
+exports[`foliage selectorOfComponent: selectorOfComponent 1`] = `
+
+import { css } from 'foliage';
+const button = css\`
+  padding: 1rem 2rem;
+  border: 2px solid gray;
+  border-radius: 1rem;
+  color: white;
+  background-color: black;
+  appearance: none;
+\`;
+
+const primary = css\`
+  background-color: black;
+  color: white;
+  padding: 1rem 2rem;
+
+  \${button} {
+    background-color: red;
+    color: white;
+  }
+\`;
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css, assertSelector as _assertSelector } from 'foliage';
+const button = {
+  content:
+    '.fkgkq9e-button{padding:1rem 2rem;border:2px solid gray;border-radius:1rem;color:#fff;background-color:#000;-webkit-appearance:none;-moz-appearance:none;appearance:none}',
+  css: 'fkgkq9e-button',
+};
+const primary = {
+  content: \`.f6pubp1-primary{background-color:#000;color:#fff;padding:1rem 2rem}.f6pubp1-primary \${_assertSelector(
+    button,
+  )}{background-color:red;color:#fff}\`,
+  css: 'f6pubp1-primary',
+};
+
+
+`;
+
 exports[`foliage varsNotCompiles: varsNotCompiles 1`] = `
 
 import {vars, css} from 'foliage'; const a = css\`outline: none;\`; const b = vars\`--random: 1px;\`

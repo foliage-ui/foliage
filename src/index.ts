@@ -1,6 +1,6 @@
-import { createEvent, createStore, Store } from 'effector';
+import { createEvent, createStore } from 'effector';
 import { DOMTag, h, node, spec } from 'forest';
-import { serialize, compile, stringify } from 'stylis';
+import { compile, serialize, stringify } from 'stylis';
 
 import { domElements } from './elements';
 
@@ -31,18 +31,27 @@ const styledId = idCount();
 
 type Callback = () => void;
 
-export type Component = ((config: Spec | Callback) => void) & {
+export type FunctionComponent = (config: Spec | Callback) => void;
+
+export type Component = FunctionComponent & {
   STYLED_ID: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
+function hasStyledId(fn: object | Function): fn is { STYLED_ID: string } {
+  // eslint-disable-next-line dot-notation
+  return typeof fn['STYLED_ID'] === 'string';
+}
+
 function join(
   strings: TemplateStringsArray,
-  interps: (string | Component | number)[],
+  interps: (string | FunctionComponent | Component | number)[],
 ) {
+  console.log('JOIN', strings, interps);
   const result = [strings[0]];
   interps.forEach((part, index) => {
     if (typeof part === 'function') {
-      if (typeof part.STYLED_ID === 'string') {
+      if (hasStyledId(part)) {
         result.push(`.es-${part.STYLED_ID}`);
       } else {
         throw new TypeError('Passed not an effector styled component');
