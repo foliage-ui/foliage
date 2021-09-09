@@ -222,7 +222,7 @@ module.exports = function (babel, options = {}) {
 
                 const templateElements = chunks.map((item, index, list) => {
                   const tail = index === list.length - 1;
-                  return t.templateElement({ raw: item }, tail);
+                  return t.templateElement({ raw: item, cooked: item }, tail);
                 });
 
                 content = t.templateLiteral(

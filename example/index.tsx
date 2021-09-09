@@ -1,15 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { css, assertSelector as ass } from '../foliage';
+import { css } from '../foliage';
 import { component } from '../react';
 
 const button = css`
+  --main: black;
+  --text: white;
   padding: 1rem 2rem;
   border: 2px solid gray;
   border-radius: 1rem;
-  color: white;
-  background-color: black;
+  color: var(--text);
+  background-color: var(--main);
   appearance: none;
+
+  &:hover {
+    box-shadow: 0 0 15px -3px black;
+  }
 `;
 
 const Button = component('button', button, {
@@ -17,12 +23,12 @@ const Button = component('button', button, {
   variants: {
     color: {
       primary: css`
-        background-color: blue;
-        color: white;
+        --main: blue;
+        --text: white;
       `,
       default: css`
-        background-color: gray;
-        color: black;
+        --main: gray;
+        --text: black;
       `,
     },
   },
@@ -34,21 +40,19 @@ const primary = css`
   padding: 1rem 2rem;
 
   ${button} {
-    background-color: red;
-    color: white;
+    --main: red;
+    --text: white;
+  }
+
+  ${button}:hover {
+    --main: pink;
+    --text: black;
   }
 
   ${button} + ${button} {
     margin-left: 15px;
   }
 `;
-
-const primary2 = {
-  content: `.f520of8-primary{background-color:#000;color:#fff;padding:1rem 2rem}.f520of8-primary ${ass(
-    button,
-  )}{background-color:red;color:#fff}`,
-  css: 'f520of8-primary',
-};
 
 const Wrapper = component('div', [primary]);
 

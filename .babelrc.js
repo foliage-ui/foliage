@@ -6,5 +6,5 @@ module.exports = {
     ],
     ['effector/babel-plugin', { addLoc: true }],
   ],
-  presets: [['@babel/preset-env', {}], '@babel/preset-typescript'],
+  presets: ['@babel/preset-env', '@babel/preset-typescript'],
 };
