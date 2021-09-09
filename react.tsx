@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 
 interface BlockCSS {
   content: string;
@@ -31,40 +31,50 @@ export function component(
   }: ComponentConfig = {},
 ): React.FC<ComponentProps & Record<string, unknown>> {
   const styleClasses = toArray(styles).map((style) => style.css);
-  console.log('COM', tag, variants, styles);
 
   return ({ className, children, ...props }) => {
+    const mainRef = React.useRef<HTMLElement>(null);
+
     React.useEffect(() => {
       toArray(styles).forEach((block) => add(block));
-    }, [styleClasses]);
-    const classes: string[] = styleClasses.concat([className].filter(isString));
-    Object.keys(variants).forEach((variantName) => {
-      const propValue = props[variantName] ?? defaults[variantName];
-      const mapper = mapVariants[variantName] ?? id;
-      const variantCase = mapper(propValue);
-      const cssBlock = variants[variantName][variantCase];
-      if (cssBlock) {
-        classes.push(cssBlock.css);
-        add(cssBlock);
-      }
-    });
+    }, [...styleClasses]);
 
-    compound.forEach(({ css: cssBlock, ...matchers }) => {
-      const isMatched = Object.keys(matchers).every((variantName) => {
-        const expectedVariantCase = matchers[variantName];
+    React.useEffect(() => {
+      if (isString(className)) mainRef.current?.classList.add(className);
+      styleClasses.forEach((css) => mainRef.current?.classList.add(css));
+    }, [className]);
+
+    React.useEffect(() => {
+      Object.keys(variants).forEach((variantName) => {
         const propValue = props[variantName] ?? defaults[variantName];
         const mapper = mapVariants[variantName] ?? id;
         const variantCase = mapper(propValue);
-        return expectedVariantCase === variantCase;
+        const cssBlock = variants[variantName][variantCase];
+        if (cssBlock) {
+          mainRef.current?.classList.add(cssBlock.css);
+          add(cssBlock);
+        }
       });
-      if (isMatched) {
-        classes.push(cssBlock.css);
-        add(cssBlock);
-      }
-    });
+    }, [variants, props, defaults, mapVariants]);
 
-    const Tag = (tag as unknown) as React.FC<{ className?: string }>;
-    return <Tag className={classes.join(' ')}>{children}</Tag>;
+    React.useEffect(() => {
+      compound.forEach(({ css: cssBlock, ...matchers }) => {
+        const isMatched = Object.keys(matchers).every((variantName) => {
+          const expectedVariantCase = matchers[variantName];
+          const propValue = props[variantName] ?? defaults[variantName];
+          const mapper = mapVariants[variantName] ?? id;
+          const variantCase = mapper(propValue);
+          return expectedVariantCase === variantCase;
+        });
+        if (isMatched) {
+          mainRef.current?.classList.add(cssBlock.css);
+          add(cssBlock);
+        }
+      });
+    }, [compound, props, defaults, mapVariants]);
+
+    const Tag = (tag as unknown) as React.FC<{ className?: string; ref?: any }>;
+    return <Tag ref={mainRef}>{children}</Tag>;
   };
 }
 
@@ -81,7 +91,6 @@ function isString(value: unknown): value is string {
 }
 
 function add(cssBlock: BlockCSS) {
-  console.log(cssBlock);
   if (!document.querySelector(`[data-foliage="${cssBlock.css}"]`)) {
     const style = document.createElement('style');
     style.dataset.foliage = cssBlock.css;
