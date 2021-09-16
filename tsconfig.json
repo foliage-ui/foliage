@@ -21,6 +21,7 @@
     "jsx": "react",
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
+    "resolveJsonModule": true,
     "target": "es2016",
     "types": ["jest", "node"],
     "plugins": [
