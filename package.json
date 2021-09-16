@@ -2,7 +2,16 @@
   "name": "foliage",
   "version": "0.200.0",
   "description": "Styled Components for forest",
-  "main": "dist/index.js",
+  "main": "index.js",
+  "module": "index.mjs",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js",
+      "default": "./index.mjs"
+    },
+    "./index.mjs": "./index.mjs"
+  },
   "types": "dist/index.d.ts",
   "homepage": "https://foliage.dev",
   "sideEffects": false,
@@ -10,7 +19,7 @@
     "test": "jest",
     "commit": "git-cz",
     "lint": "eslint ./",
-    "build": "tsc --build ./tsconfig.build.json && webpack",
+    "build": "tsc --build ./tsconfig.build.json && rollup --config rollup.config.js",
     "format": "prettier --write \"./src/**/**.{ts,tsx,js,jsx,json}\"",
     "start": "parcel example/index.html --no-cache",
     "prepublishOnly": "rm -rf dist && yarn build"
@@ -21,7 +30,7 @@
   "repository": {
     "url": "https://github.com/foliage-ui/foliage"
   },
-  "files": ["dist"],
+  "files": ["index.js", "index.js.map", "index.mjs", "index.mjs.map", "dist"],
   "keywords": [
     "components",
     "dom",
@@ -50,12 +59,17 @@
     "@eslint-kit/eslint-config-node": "^2.0.0",
     "@eslint-kit/eslint-config-prettier": "^2.0.0",
     "@eslint-kit/eslint-config-typescript": "^3.2.0",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-typescript": "^8.2.5",
     "@types/jest": "^25.2.1",
     "@types/node": "^13.13.5",
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
     "@typescript-eslint/parser": "^4.4.1",
     "babel-jest": "^26.6.3",
+    "babel-plugin-module-resolver": "^4.1.0",
     "babel-plugin-tester": "^10.0.0",
     "change-case": "^4.1.2",
     "commitizen": "^4.1.2",
@@ -70,14 +84,13 @@
     "prettier": "^2.0.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "rollup": "^2.56.3",
+    "rollup-plugin-terser": "^7.0.2",
     "sharec-sova-config": "^0.1.0",
     "terser-webpack-plugin": "^3.0.2",
-    "ts-loader": "^7.0.5",
     "ts-node": "^9.1.1",
-    "typescript": "^4.4.2",
-    "typescript-styled-plugin": "^0.15.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "typescript": "4.3.5",
+    "typescript-styled-plugin": "^0.15.0"
   },
   "sharec": {
     "config": "sharec-sova-config",

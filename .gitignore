@@ -140,3 +140,9 @@ Icon
 .history
 .idea/
 .vscode/*
+
+# Built package artifacts
+index.js
+index.js.map
+index.mjs
+index.mjs.map
