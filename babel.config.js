@@ -28,6 +28,9 @@ const aliases = {
   forest: {
     esm: 'forest/forest.mjs',
   },
+  stylis: {
+    esm: 'stylis/dist/stylis.mjs',
+  },
 };
 
 const babelConfig = {

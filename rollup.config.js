@@ -33,7 +33,11 @@ function createBuild(input, format) {
         }),
       }),
     ],
-    external: ['forest/forest.mjs', 'effector/effector.mjs'].concat(
+    external: [
+      'forest/forest.mjs',
+      'effector/effector.mjs',
+      'stylis/dist/stylis.mjs',
+    ].concat(
       Object.keys(Package.peerDependencies),
       Object.keys(Package.dependencies),
     ),
