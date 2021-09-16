@@ -47,7 +47,6 @@ function join(
   strings: TemplateStringsArray,
   interps: (string | FunctionComponent | Component | number)[],
 ) {
-  console.log('JOIN', strings, interps);
   const result = [strings[0]];
   interps.forEach((part, index) => {
     if (typeof part === 'function') {

@@ -1,6 +1,6 @@
 {
   "name": "foliage",
-  "version": "0.106.0",
+  "version": "0.200.0",
   "description": "Styled Components for forest",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,7 +19,7 @@
     "access": "public"
   },
   "repository": {
-    "url": "https://github.com/sergeysova/foliage"
+    "url": "https://github.com/foliage-ui/foliage"
   },
   "files": ["dist"],
   "keywords": [
