@@ -22,9 +22,6 @@ jobs:
       - name: Build
         run: yarn build
 
-      - name: Build test
-        run: yarn test-build
-
       - name: Run tests
         run: yarn test
         env:
