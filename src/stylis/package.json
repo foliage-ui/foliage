@@ -1,10 +1,10 @@
 {
   "type": "module",
-  "main": "./dist/umd/stylis.js",
+  "main": "built/umd/stylis.js",
   "exports": {
     ".": {
-      "require": "./dist/umd/stylis.js",
-      "import": "./dist/stylis.mjs"
+      "require": "./built/umd/stylis.js",
+      "import": "./built/stylis.mjs"
     }
   }
 }
