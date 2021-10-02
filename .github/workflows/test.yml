@@ -1,4 +1,4 @@
-name: Publish CI
+name: Test It
 
 on: [push]
 
