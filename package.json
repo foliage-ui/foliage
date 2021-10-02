@@ -1,6 +1,6 @@
 {
   "name": "foliage",
-  "version": "0.200.1",
+  "version": "0.0.0-real-version-will-be-set-on-ci",
   "description": "Styled Components for forest",
   "main": "index.js",
   "module": "index.mjs",
