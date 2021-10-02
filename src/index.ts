@@ -1,6 +1,6 @@
 import { createEvent, createStore } from 'effector';
 import { DOMTag, h, node, spec } from 'forest';
-import { compile, serialize, stringify } from 'stylis';
+import * as stylis from './stylis';
 
 import { domElements } from './elements';
 
@@ -19,7 +19,10 @@ $styles.on(addStyle, (state, { id, styles }) => {
 });
 
 function make(id: string, styles: string) {
-  return serialize(compile(`.es-${id} { ${styles} }`), stringify);
+  return stylis.serialize(
+    stylis.compile(`.es-${id} { ${styles} }`),
+    stylis.stringify,
+  );
 }
 
 const idCount = () => {
@@ -77,38 +80,37 @@ type TagMap = {
   [P in DOMTag]: Creator;
 };
 
-const fabric: TagFabric & Partial<TagMap> = (tag: DOMTag) => (
-  content,
-  ...interpolations
-) => {
-  const id = styledId();
+const fabric: TagFabric & Partial<TagMap> =
+  (tag: DOMTag) =>
+  (content, ...interpolations) => {
+    const id = styledId();
 
-  const styles = join(content, interpolations);
+    const styles = join(content, interpolations);
 
-  const Component = (config: Spec | Callback) => {
-    addStyle({ id, styles });
+    const Component = (config: Spec | Callback) => {
+      addStyle({ id, styles });
 
-    h(tag, () => {
-      node((reference) => {
-        reference.classList.add(`es-${id}`);
-      });
-      if (config) {
-        if (typeof config === 'function') {
-          config();
-        } else {
-          spec(config);
-          if (typeof config.fn === 'function') {
-            config.fn();
+      h(tag, () => {
+        node((reference) => {
+          reference.classList.add(`es-${id}`);
+        });
+        if (config) {
+          if (typeof config === 'function') {
+            config();
+          } else {
+            spec(config);
+            if (typeof config.fn === 'function') {
+              config.fn();
+            }
           }
         }
-      }
-    });
+      });
+    };
+
+    Component.STYLED_ID = id;
+
+    return Component;
   };
-
-  Component.STYLED_ID = id;
-
-  return Component;
-};
 
 domElements.forEach((element) => {
   fabric[element] = fabric(element);

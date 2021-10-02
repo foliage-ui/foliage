@@ -6,7 +6,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import Package from './package.json';
 
-const extensions = ['.tsx', '.ts', '.js', '.json'];
+const extensions = ['.mjs', '.tsx', '.ts', '.js', '.json'];
 
 function createBuild(input, format) {
   return {
@@ -18,8 +18,8 @@ function createBuild(input, format) {
       sourcemap: true,
     },
     plugins: [
-      commonjs(),
       pluginResolve({ extensions }),
+      commonjs({ extensions: ['.js'] }),
       typescript({
         tsconfig: './tsconfig.build.json',
       }),
@@ -32,12 +32,8 @@ function createBuild(input, format) {
           isEsm: format === 'esm',
         }),
       }),
-    ],
-    external: [
-      'forest/forest.mjs',
-      'effector/effector.mjs',
-      'stylis/dist/stylis.mjs',
-    ].concat(
+    ].filter(Boolean),
+    external: ['forest/forest.mjs', 'effector/effector.mjs'].concat(
       Object.keys(Package.peerDependencies),
       Object.keys(Package.dependencies),
     ),
