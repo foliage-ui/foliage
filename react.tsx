@@ -10,6 +10,20 @@ export const createGlobalStyle: any = () => {
   throw new Error(`Looks like you didn't setup foliage/babel-plugin`);
 };
 
+export const assertKeyframe = (input: any) => {
+  if (input.keyframes) {
+    return input;
+  }
+  throw new Error(
+    'Looks like you passed wrong element to an "animation" property',
+  );
+};
+
+export const assertVariable = (input: any) => {
+  return input;
+  // throw new Error('Looks like you passed wrong element as css-custom-property');
+};
+
 interface BlockCSS {
   content: string;
   css: string;
@@ -27,6 +41,17 @@ interface ComponentConfig {
 interface ComponentProps {
   className?: string;
 }
+
+export const Global: React.FC<{ styles: any[] | any }> = ({ styles }) => {
+  React.useEffect(() => {
+    if (Array.isArray(styles)) {
+      styles.forEach((style) => add(style));
+    } else {
+      add(styles);
+    }
+  }, [styles]);
+  return null;
+};
 
 export function component(
   tag: string, // eslint-disable-line @typescript-eslint/naming-convention
