@@ -12,7 +12,7 @@ export default {
   // bail: 0,
 
   // The directory where Jest should store its cached dependency information
-  // cacheDirectory: "/private/var/folders/cw/xpnjt9kx4ls4c08lh10_bpd40000gn/T/jest_dx",
+  cacheDirectory: './.jest-cache',
 
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
@@ -27,6 +27,7 @@ export default {
   coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
+  // eslint-disable-next-line sonarjs/no-duplicate-string
   coveragePathIgnorePatterns: ['/node_modules/'],
 
   // Indicates which provider should be used to instrument code for coverage
@@ -109,9 +110,7 @@ export default {
   // rootDir: undefined,
 
   // A list of paths to directories that Jest should use to search for files in
-  // roots: [
-  //   "<rootDir>"
-  // ],
+  roots: ['<rootDir>'],
 
   // Allows you to use a custom runner instead of Jest's default test runner
   // runner: "jest-runner",
@@ -129,7 +128,7 @@ export default {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -138,13 +137,13 @@ export default {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
+  // testMatch: ['**/?(*.)+(spec|test).[tj]s?(x)'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: ['/node_modules/'],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
-  // testRegex: [],
+  testRegex: ['\\.test\\.[tj]sx?$'],
 
   // This option allows the use of a custom results processor
   // testResultsProcessor: undefined,
@@ -160,14 +159,11 @@ export default {
 
   // A map from regular expressions to paths to transformers
   transform: {
-    '^.+\\.[t|j]s$': 'babel-jest',
+    '.+\\.[tj]sx?$': 'babel-jest',
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
-  // transformIgnorePatterns: [
-  //   "/node_modules/",
-  //   "\\.pnp\\.[^\\/]+$"
-  // ],
+  transformIgnorePatterns: ['/node_modules/', '\\.pnp\\.[^\\/]+$'],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,

@@ -197,6 +197,21 @@ export const Chip = component('div', [chip], {
 
 `;
 
+exports[`foliage cssImportedFromLocal: cssImportedFromLocal 1`] = `
+
+import {css} from '../react'; const demo = css\`.global & { [data-demo="a"] {color: black} }\`
+
+      ↓ ↓ ↓ ↓ ↓ ↓
+
+import { css } from '../react';
+const demo = {
+  content: '.global .f-se2apj [data-demo=a]{color:#000}',
+  css: 'f-se2apj',
+};
+
+
+`;
+
 exports[`foliage cssImportedFromPackage: cssImportedFromPackage 1`] = `
 
 import {css} from 'foliage'; const example = css\`color: black\`

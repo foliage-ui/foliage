@@ -34,24 +34,42 @@ const aliases = {
 };
 
 const babelConfig = {
-  presets: ['@babel/preset-env', '@babel/preset-typescript'],
-  plugins(meta) {
-    const alias = parseAliases(meta, aliases);
-    return [
-      [
-        require.resolve('./babel-plugin.js'),
-        { allowedModules: '../foliage', debug: false },
-      ],
-      ['effector/babel-plugin', { addLoc: true }],
-      [
-        'babel-plugin-module-resolver',
-        {
-          alias,
-          loglevel: 'silent',
-        },
-      ],
-    ];
-  },
+  presets: [
+    '@babel/preset-env',
+    '@babel/preset-typescript',
+    '@babel/preset-react',
+  ],
+  plugins: [
+    // [
+    //   './babel-plugin.js',
+    //   {
+    //     allowedModules: ['foliage', '../../react'],
+    //   },
+    // ],
+  ],
+  // plugins(meta) {
+  //   const alias = parseAliases(meta, aliases);
+  //   return [
+  //     // [
+  //     //   require.resolve('./babel-plugin.js'),
+  //     //   {
+  //     //     allowedModules: ['../foliage', 'foliage', '../../react'],
+  //     //     debug: false,
+  //     //   },
+  //     // ],
+  //     // ['effector/babel-plugin', { addLoc: true }],
+  //     // [
+  //     //   'babel-plugin-module-resolver',
+  //     //   {
+  //     //     alias: {
+  //     //       ...alias,
+  //     //       foliage: './react',
+  //     //     },
+  //     //     loglevel: 'silent',
+  //     //   },
+  //     // ],
+  //   ];
+  // },
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity

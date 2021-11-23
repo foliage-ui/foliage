@@ -144,9 +144,8 @@ module.exports = function (babel, options = {}) {
 
                 // Source wrapped with .class {} or @keyframes name {}, etc.
                 const wrapped = createContainer(source, methodName, fullName);
-                const { css, interpolations: interpolationTypes } = compile(
-                  wrapped,
-                );
+                const { css, interpolations: interpolationTypes } =
+                  compile(wrapped);
 
                 // After compilation, we need to detect each marker and split string back
                 // But after compilation marker may be duplicated, ex.: @keyframes autoprefixing as @-webkit-keyframes
@@ -328,6 +327,7 @@ function createContainer(source, type, fullName) {
  * @param {(p: { methodName: string, moduleName: string, module: Path, namespace: string | null }) => void} fn
  */
 function resolveImport(t, path, fn) {
+  const programPath = path.find((path) => path.isProgram());
   if (!t.isTaggedTemplateExpression(path)) {
     throw new TypeError(
       `resolveImport called on unsupported type "${path.type}". It is should be "TaggedTemplateExpression"`,
@@ -361,7 +361,7 @@ function resolveImport(t, path, fn) {
   // css``
   if (t.isIdentifier(path.node.tag)) {
     const localMethodName = path.node.tag.name;
-    const binding = path.scope.getOwnBinding(localMethodName);
+    const binding = programPath.scope.getOwnBinding(localMethodName);
     if (binding) {
       const resolved = resolveSpecifierImport(t, binding);
       if (resolved) {

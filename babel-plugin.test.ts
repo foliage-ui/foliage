@@ -293,6 +293,12 @@ pluginTester({
       pluginOptions: { debug: false },
     },
     cssImportedFromReact: `import {css} from 'foliage-react'; const demo = css\`.global & { [data-demo="a"] {color: black} }\``,
+    cssImportedFromLocal: {
+      code: `import {css} from '../react'; const demo = css\`.global & { [data-demo="a"] {color: black} }\``,
+      pluginOptions: {
+        allowedModules: ['../react'],
+      },
+    },
     keyframesAndGlobalStylesShouldCompile: fullExample,
     varsNotCompiles: `import {vars, css} from 'foliage'; const a = css\`outline: none;\`; const b = vars\`--random: 1px;\``,
     namespaceSupport,

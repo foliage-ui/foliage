@@ -1,5 +1,15 @@
 import React from 'react';
 
+export const css: any = () => {
+  throw new Error(`Looks like you didn't setup foliage/babel-plugin`);
+};
+export const keyframes: any = () => {
+  throw new Error(`Looks like you didn't setup foliage/babel-plugin`);
+};
+export const createGlobalStyle: any = () => {
+  throw new Error(`Looks like you didn't setup foliage/babel-plugin`);
+};
+
 interface BlockCSS {
   content: string;
   css: string;
@@ -73,7 +83,7 @@ export function component(
       });
     }, [compound, props, defaults, mapVariants]);
 
-    const Tag = (tag as unknown) as React.FC<{ className?: string; ref?: any }>;
+    const Tag = tag as unknown as React.FC<{ className?: string; ref?: any }>;
     return <Tag ref={mainRef}>{children}</Tag>;
   };
 }
